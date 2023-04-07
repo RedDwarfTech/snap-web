@@ -1,7 +1,5 @@
+import { IUploadedFile } from "@/models/UploadedFile";
+
 export interface AppState {
-    robot: {
-      id: string;
-      name: string;
-      email: string;
-    };
-  }
+    file: IUploadedFile
+}

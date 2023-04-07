@@ -1,0 +1,61 @@
+.snap-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.snap-container h3{
+    color: #1266f1;
+}
+
+.snap-intro {
+    border: 1px solid #f3f3f3;
+    background-color: #f3f3f3;
+    width: 80%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.snap-intro button {
+    background-color: #1266f1;
+    border-radius: 0.3em;
+    font-weight: 500;
+    font-size: 18px;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.2), 0 2px 10px 0 rgba(0,0,0,.1) ;
+    border: 0;
+    width: 120px;
+    height: 40px;
+    margin-left: 50px;
+}
+
+.snap-oper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 50px;
+}
+
+.snap-oper-btn button{
+    background-color: #1266f1;
+    color: #fff;
+    border-radius: 0.3em;
+    font-weight: 500;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.2), 0 2px 10px 0 rgba(0,0,0,.1) ;
+    border: 0;
+    width: 120px;
+    height: 40px;
+    margin-top: 35px;
+}
+
+.snap-preview img{
+    width: 300px;
+    height: 350px;    
+}
+
+input[type="file"]::before {
+    content: "选择文件";
+ }
