@@ -13,3 +13,10 @@ export function fileDownloadAction(data: any) {
         file: data
     };
 }
+
+export function fileClearAction(data: any) {
+    return {
+        type: "FILE_CLEAR",
+        file: data
+    };
+}

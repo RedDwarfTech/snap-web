@@ -39,7 +39,7 @@
     margin-top: 50px;
 }
 
-.snap-oper-btn button{
+.snap-action-impl button{
     background-color: #1266f1;
     color: #fff;
     border-radius: 0.3em;
@@ -49,6 +49,7 @@
     width: 120px;
     height: 40px;
     margin-top: 35px;
+    margin-right: 30px;
 }
 
 .snap-preview img{
@@ -58,4 +59,42 @@
 
 input[type="file"]::before {
     content: "选择文件";
- }
+}
+
+.photo-size {
+    width: 350px;
+    margin-top: 20px;
+}
+
+.photo-bg {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    margin-top:20px;
+}
+
+.photo-bg-choice {
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+}
+
+.photo-bg-red {
+    width: 30px;
+    height: 30px;
+    background-color: red;
+}
+
+.photo-bg-blue {
+    width: 30px;
+    height: 30px;
+    background-color: blue;
+    margin-left: 10px;
+}
+
+.snap-action-impl {
+    display: flex;
+    flex-direction: row;
+}

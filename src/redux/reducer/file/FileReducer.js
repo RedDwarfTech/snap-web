@@ -16,6 +16,11 @@ const FileReducer = (state=initState, action) => {
                 ...state,
                 downloadfile: action.file 
             };
+        case "FILE_CLEAR":
+            return {
+                ...state,
+                file: {}
+            };
         default:
             break;
     }

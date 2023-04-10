@@ -1,18 +1,31 @@
 import withConnect from "@/component/hoc/withConnect";
 import "./Home.css";
 import prevPic from "@/resource/image/nohpic.jpg";
-import { MouseEventHandler, useRef, useState } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { doUpload, getDownloadFileUrl } from "@/service/FileService";
 import { IUploadedFile } from "@/models/UploadedFile";
 import SnapHeader from "@/component/header/SnapHeader";
 import About from "../about/About";
+import store from "@/redux/store/store";
+import { fileClearAction } from "@/redux/action/file/FileAction";
+import { ICropParams } from "@/models/request/photo/CropParams";
+import { Select, Space } from "antd";
+import { v4 as uuid } from 'uuid';
+
+const { Option } = Select;
+
 
 const Home: React.FC = (props: any) => {
 
     const [photoUrl, setPhotoUrl] = useState<File | null>();
-    const [uploadedFile, setUploadedFile] = useState<IUploadedFile>();
+    const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
     const inputRef = useRef<HTMLInputElement>(null);
     const [currentMenu, setCurrentMenu] = useState<String>('photo');
+    const [photoType, setPhotoType] = useState<String[]>([]);
+
+    useEffect(() => {
+        readPhotoType();
+    }, []);
 
     if (props && props.file && Object.keys(props.file.file).length > 0) {
         if (!uploadedFile || uploadedFile.file_id !== props.file.file.file_id) {
@@ -23,7 +36,7 @@ const Home: React.FC = (props: any) => {
     const handleFileChange = (event: any) => {
         const file = event.target.files[0];
         const reader = new FileReader();
-        if(file){
+        if (file) {
             reader.readAsDataURL(file);
             reader.onloadend = () => {
                 setPhotoUrl(file);
@@ -35,9 +48,18 @@ const Home: React.FC = (props: any) => {
         event.preventDefault();
         const formData = new FormData();
         if (photoUrl) {
+            const cropParams: ICropParams = {
+                crop: false
+            };
             formData.append('file', photoUrl);
+            formData.append('params', JSON.stringify(cropParams));
+            // Object.keys(cropParams).forEach((key) => formData.append(key, cropParams[key as keyof ICropParams].toString()));
             doUpload(formData);
         }
+    }
+
+    const clearPhotho = () => {
+        store.dispatch(fileClearAction(null))
     }
 
     const downloadFile = () => {
@@ -57,6 +79,8 @@ const Home: React.FC = (props: any) => {
         setPhotoUrl(null);
         if (inputRef && inputRef.current) {
             inputRef.current.value = '';
+            clearPhotho();
+            setUploadedFile(null);
         }
     }
 
@@ -99,6 +123,49 @@ const Home: React.FC = (props: any) => {
         setCurrentMenu(menu);
     }
 
+    const readPhotoType = () => {
+        fetch('./phototype.txt')
+            .then(response => response.text())
+            .then(contents => {
+                let dataArray: string[] = contents.split("\n");
+                setPhotoType(dataArray);
+            })
+            .catch(error => console.error(error));
+    }
+
+    const renderPhotoTypeImpl = () => {
+        const photoList: JSX.Element[] = [];
+        if (photoType && photoType.length > 0) {
+        photoType.forEach(item => {
+            const pType = item.trim();
+            if(pType && pType.length > 0) {
+                const photoTypeContent = pType.split(',');
+                const showText = photoTypeContent[0] + '(' + photoTypeContent[1] + 'cm *' + photoTypeContent[2] + 'cm)';
+                photoList.push(
+                    <Option key={uuid()} value={item} label={item}>
+                        <Space>
+                            {showText}
+                        </Space>
+                    </Option>);
+                }
+        });
+        }
+        return photoList;
+    }
+
+    const renderUploadImage = () => {
+        if (uploadedFile && uploadedFile.watermark_path) {
+            return (<button onClick={downloadFile}>下载</button>);
+        }else{
+            return (
+                <form onSubmit={handleSubmit}>
+                    <button type="submit">生成</button>
+                </form>
+            );
+        }
+    }
+
+
     const renderPage = () => {
         if (currentMenu === "photo") {
             return (<div className="snap-container">
@@ -110,17 +177,32 @@ const Home: React.FC = (props: any) => {
                 <div className="snap-oper">
                     {renderPreview()}
                     <div className="snap-oper-btn">
-                        <button onClick={reuploadFile}>重新上传</button>
-                        <form onSubmit={handleSubmit}>
-                            <button type="submit">生成</button>
-                        </form>
-                        <button onClick={downloadFile}>下载</button>
+                        <div className="snap-params">
+                            <div className="photo-size">
+                                <span>尺寸：</span>
+                                <Select 
+                                    placeholder="请选择照片尺寸"
+                                    style={{ width: '85%' }}>{renderPhotoTypeImpl()}
+                                </Select>
+                            </div>
+                            <div className="photo-bg">
+                                <span>背景色：</span>
+                                <div className="photo-bg-choice">
+                                    <div className="photo-bg-red"></div>
+                                    <div className="photo-bg-blue"></div>
+                                </div>                               
+                            </div>
+                        </div>
+                        <div className="snap-action-impl">
+                            <button onClick={reuploadFile}>重新上传</button>
+                            {renderUploadImage()}
+                        </div>
                     </div>
                 </div>
             </div>);
         } else if (currentMenu === "about") {
             return (<About></About>);
-        }else{
+        } else {
             return (<div>开发中，敬请期待...</div>);
         }
     }
