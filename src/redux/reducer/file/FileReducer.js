@@ -2,6 +2,7 @@
 const initState = {
     file: {},
     downloadfile: {},
+    rembgfile: {}
 };
 
 const FileReducer = (state=initState, action) => {
@@ -21,6 +22,11 @@ const FileReducer = (state=initState, action) => {
                 ...state,
                 file: {}
             };
+        case "FILE_REMOVE_BG":
+            return {
+                ...state,
+                rembgfile: action.file
+            }
         default:
             break;
     }

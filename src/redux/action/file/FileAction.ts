@@ -20,3 +20,10 @@ export function fileClearAction(data: any) {
         file: data
     };
 }
+
+export function fileRemBgAction(data: any) {
+    return {
+        type: "FILE_REMOVE_BG",
+        file: data
+    };
+}

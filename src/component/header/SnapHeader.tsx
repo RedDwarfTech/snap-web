@@ -104,7 +104,7 @@ const SnapHeader: React.FC<HeaderFormProps> = (props) => {
     <div>
       <nav>
         <a onClick={() => handleMenuClick('photo')}>证件照制作</a>
-        {/* <a onClick={() => handleMenuClick('account')}>证件照换底色</a> */}
+        <a onClick={() => handleMenuClick('bgcolor')}>证件照换底色</a>
         <a onClick={() => handleMenuClick('about')}>关于</a>
         {renderLogin()}
       </nav>
