@@ -1,11 +1,18 @@
+import { AppState } from "@/redux/types/AppState";
+import { Action, ActionCreator } from "redux";
 
-const initState = {
-    file: {},
+const initState: AppState = {
+    file: {
+        id: 0,
+        file_id: '',
+        created_time: 0,
+        watermark_path: ''
+    },
     downloadfile: {},
     rembgfile: {}
 };
 
-const FileReducer = (state=initState, action) => {
+const FileReducer = (state=initState, action: any) => {
     switch (action.type) {
         case "UPLOAD_FILE":
             return {
@@ -20,7 +27,9 @@ const FileReducer = (state=initState, action) => {
         case "FILE_CLEAR":
             return {
                 ...state,
-                file: {}
+                file: {},
+                rembgfile: {},
+                downloadfile: {}
             };
         case "FILE_REMOVE_BG":
             return {

@@ -7,8 +7,11 @@ import { IUploadedFile } from "@/models/UploadedFile";
 import store from "@/redux/store/store";
 import { fileAction, fileClearAction } from "@/redux/action/file/FileAction";
 import { ICropParams } from "@/models/request/photo/CropParams";
-import { Select, Space } from "antd";
+import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
+import { useSelector } from "react-redux";
+import { AppState } from "@/redux/types/AppState";
+import userEvent from "@testing-library/user-event";
 
 const { Option } = Select;
 
@@ -16,9 +19,20 @@ const { Option } = Select;
 const GenPhoto: React.FC = (props: any) => {
 
     const [photoUrl, setPhotoUrl] = useState<File | null>();
+    const [photoSize, setPhotoSize] = useState<string>();
     const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
     const inputRef = useRef<HTMLInputElement>(null);
     const [photoType, setPhotoType] = useState<String[]>([]);
+    const { rembgfile,downloadfile,file } = useSelector((state:any) => state.file)
+
+    useEffect(()=>{
+        const file1 = file;
+        const rf = rembgfile;
+        if(!file|| Object.keys(file).length===0){
+            setPhotoUrl(null);
+            setUploadedFile(null);
+        }
+    },[rembgfile,downloadfile,file]);
 
     useEffect(() => {
         readPhotoType();
@@ -101,10 +115,22 @@ const GenPhoto: React.FC = (props: any) => {
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
+        if(photoUrl === undefined || !photoUrl){
+            message.info("请选择文件");
+            return;
+        }
+        if(!photoSize || photoSize.trim().length === 0) {
+            message.info("请选择证件照尺寸");
+            return;
+        }
+        const width = (parseFloat(photoSize.split(",")[1].trim())*300)/2.54;
+        const height = (parseFloat(photoSize.split(",")[2].trim())*300)/2.54;
         const formData = new FormData();
         if (photoUrl) {
             const cropParams: ICropParams = {
-                crop: false
+                crop: false,
+                width: parseInt(width.toString()),
+                height: parseInt(height.toString())
             };
             formData.append('file', photoUrl);
             formData.append('params', JSON.stringify(cropParams));
@@ -157,6 +183,10 @@ const GenPhoto: React.FC = (props: any) => {
         }
     }
 
+    const handleSelectChange = (e:any) => {
+        setPhotoSize(e);
+    }
+
     return (<div className="snap-container">
                 <div className="snap-intro">
                     {/* <h3>一键生成证件照</h3><div>支持png文件</div> */}
@@ -169,7 +199,8 @@ const GenPhoto: React.FC = (props: any) => {
                         <div className="snap-params">
                             <div className="photo-size">
                                 <span>尺寸：</span>
-                                <Select 
+                                <Select
+                                    onChange={handleSelectChange} 
                                     placeholder="请选择照片尺寸"
                                     style={{ width: '85%' }}>{renderPhotoTypeImpl()}
                                 </Select>

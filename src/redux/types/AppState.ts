@@ -1,5 +1,7 @@
 import { IUploadedFile } from "@/models/UploadedFile";
 
 export interface AppState {
-    file: IUploadedFile
+    file: IUploadedFile,
+    downloadfile: {},
+    rembgfile: {}
 }
