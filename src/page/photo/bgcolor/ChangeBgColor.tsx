@@ -32,7 +32,7 @@ const ChangeBgColor: React.FC = (props: any) => {
 
     const renderPreview = () => {
         return (
-            <div className="snap-preview">
+            <div className="snap-crop-preview">
                 <img src={bgRemovedUrl ? bgRemovedUrl: prevPic} style ={{backgroundColor:bgColor}} ></img>
             </div>
         );
@@ -46,9 +46,11 @@ const ChangeBgColor: React.FC = (props: any) => {
 
     return (
         <div className="bgchange-container">
-            <h1>证件照换底色</h1>
+            <h2>证件照换底色</h2>
             <div>
-                <FileUploader onGetPhotoUrl={(value) => onGetPhotoUrl(value)} ></FileUploader>
+                <div className="crop-intro">
+                    <FileUploader onGetPhotoUrl={(value) => onGetPhotoUrl(value)} ></FileUploader>
+                </div>
                 {renderPreview()}
                 <div className="photo-bg">
                     <span>底色：</span>
