@@ -41,7 +41,7 @@ server {
 sudo kill -9 `ps -ef|grep nginx  |grep -v grep|awk '{print $2}'`
 # 启动nginx
 /opt/homebrew/opt/nginx/bin/nginx -c /System/Volumes/Data/opt/homebrew/etc/nginx/nginx.conf
-# 重新启动nginx
+# 重新加载nginx配置
 /opt/homebrew/opt/nginx/bin/nginx -s reload -c /System/Volumes/Data/opt/homebrew/etc/nginx/nginx.conf
 # 查看nginx错误日志
 tail -f /opt/homebrew/opt/nginx/logs/error.log

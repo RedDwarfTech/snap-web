@@ -10,8 +10,6 @@ import { ICropParams } from "@/models/request/photo/CropParams";
 import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
-import { AppState } from "@/redux/types/AppState";
-import userEvent from "@testing-library/user-event";
 
 const { Option } = Select;
 
@@ -24,10 +22,9 @@ const GenPhoto: React.FC = (props: any) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [photoType, setPhotoType] = useState<String[]>([]);
     const { rembgfile,downloadfile,file } = useSelector((state:any) => state.file)
+    const [bgColor, setBgColor] = useState('#ffffff');
 
     useEffect(()=>{
-        const file1 = file;
-        const rf = rembgfile;
         if(!file|| Object.keys(file).length===0){
             setPhotoUrl(null);
             setUploadedFile(null);
@@ -160,7 +157,7 @@ const GenPhoto: React.FC = (props: any) => {
         if (uploadedFile && uploadedFile.watermark_path) {
             return (
                 <div className="snap-preview">
-                    <img src={uploadedFile.watermark_path} ></img>
+                    <img src={uploadedFile.watermark_path} style={{ backgroundColor: bgColor }}></img>
                 </div>
             );
         }
@@ -187,6 +184,20 @@ const GenPhoto: React.FC = (props: any) => {
         setPhotoSize(e);
     }
 
+    const bgColorClick = (event: any) => {
+        switch (event) {
+            case 'red':
+                setBgColor('#FF0000');
+                break;
+            case 'blue':
+                setBgColor('#0000FF');
+                break;
+            default:
+                message.warning("不支持的背景颜色");
+                break;
+        }
+    }
+
     return (<div className="snap-container">
                 <div className="snap-intro">
                     {/* <h3>一键生成证件照</h3><div>支持png文件</div> */}
@@ -208,8 +219,8 @@ const GenPhoto: React.FC = (props: any) => {
                             <div className="photo-bg">
                                 <span>背景色：</span>
                                 <div className="photo-bg-choice">
-                                    <div className="photo-bg-red"></div>
-                                    <div className="photo-bg-blue"></div>
+                                    <div className="photo-bg-red" onClick={() => bgColorClick('red')}></div>
+                                    <div className="photo-bg-blue" onClick={() => bgColorClick('blue')}></div>
                                 </div>                               
                             </div>
                         </div>

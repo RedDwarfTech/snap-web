@@ -11,39 +11,44 @@ const instance = axios.create({
 instance.defaults.headers.post['Content-Type'] = 'application/json'
 
 instance.interceptors.request.use((request) => {
-      const accessToken = localStorage.getItem(WheelGlobal.ACCESS_TOKEN_NAME);
-      accessToken && (request.headers['x-access-token'] = accessToken);
-      request.headers['x-request-id'] = uuid();
-      return request
-  },
-    (  error: any) => {return Promise.reject(error)
+  const accessToken = localStorage.getItem(WheelGlobal.ACCESS_TOKEN_NAME);
+  accessToken && (request.headers['x-access-token'] = accessToken);
+  request.headers['x-request-id'] = uuid();
+  return request
+},
+  (error: any) => {
+    return Promise.reject(error)
   }
 )
 
 let isRefreshing = false
 instance.interceptors.response.use((response) => {
-  if(!isRefreshing) {
+  if (!isRefreshing) {
     ResponseHandler.handleWebCommonFailure(response.data);
   }
-  if(!ResponseHandler.responseSuccess(response.data)){
+  if (!ResponseHandler.responseSuccess(response.data)) {
     message.info(response.data.msg);
   }
   return response;
 },
-(  error: any) => {return Promise.reject(error)}
+  (error: any) => { return Promise.reject(error) }
 )
 
 export function requestWithAction(config: any, action: (arg0: any) => any) {
   return instance(config).then(
-      (    response: { data: {
-          url: string; result: any; 
-}; }) => {
+    (response: {
+      data: {
+        url: string; result: any;
+      };
+    }) => {
       const data = response.data.result;
-      store.dispatch(action(data));
+      if (ResponseHandler.responseSuccess(response.data)) {
+        store.dispatch(action(data));
+      }
       return response.data;
     }
   ).catch(
-      (    error: any) => {
+    (error: any) => {
       console.error(error);
     }
   );
