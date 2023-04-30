@@ -1,6 +1,20 @@
 import { requestWithAction } from "@/net/XHRClient";
-import { fileDownloadAction } from "@/redux/action/file/FileAction";
+import { FileActionType, fileDownloadAction } from "@/redux/action/file/FileAction";
 import { Action, ActionCreator } from "redux";
+import store  from "@/redux/store/store";
+import { requestWithActionType } from "rd-component";
+import { PhotoActionType } from "@/redux/action/photo/PhotoAction";
+
+export function uploadBackgroundImage(params: any){
+    const config = {
+        method: 'post',
+        url: '/snap/photo/rembg',
+        headers: {'Content-Type': 'application/json'},
+        data: JSON.stringify(params)
+    };
+    const actionTypeString: string = PhotoActionType[PhotoActionType.REM_BACKGROUND];
+    return requestWithActionType(config, actionTypeString, store);
+}
 
 export function doUpload(formData: FormData, url: string, action: ActionCreator<Action>) {
     const config = {
@@ -11,7 +25,8 @@ export function doUpload(formData: FormData, url: string, action: ActionCreator<
         },
         data: formData
     };
-    return requestWithAction(config, action);
+    const actionTypeString: string = FileActionType[FileActionType.UPLOAD_FILE];
+    return requestWithActionType(config, actionTypeString, store);
 }
 
 

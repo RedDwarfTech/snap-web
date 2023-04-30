@@ -1,4 +1,3 @@
-import withConnect from "@/component/hoc/withConnect";
 import "./GenPhoto.css";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
@@ -10,6 +9,7 @@ import { ICropParams } from "@/models/request/photo/CropParams";
 import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
+import withConnect from "@/component/hoc/withConnect";
 
 const { Option } = Select;
 
@@ -35,11 +35,11 @@ const GenPhoto: React.FC = (props: any) => {
         readPhotoType();
     }, []);
 
-    if (props && props.file && Object.keys(props.file.file).length > 0) {
-        if (!uploadedFile || uploadedFile.file_id !== props.file.file.file_id) {
-            setUploadedFile(props.file.file)
-        }
-    }
+    //if (props && props.file && Object.keys(props.file.file).length > 0) {
+    //    if (!uploadedFile || uploadedFile.file_id !== props.file.file.file_id) {
+            //setUploadedFile(props.file.file)
+    //    }
+    //}
 
     const readPhotoType = () => {
         fetch('./phototype.txt')

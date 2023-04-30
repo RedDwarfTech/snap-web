@@ -1,7 +1,7 @@
-import { WheelGlobal } from 'js-wheel';
-import { readConfig } from '../../config/app/config-reader';
-import { requestWithAction } from '@/net/XHRClient';
-import { getCurrentUserAction, userLogin } from '@/redux/action/user/UserAction';
+import { WheelGlobal } from 'rdjs-wheel';
+import { readConfig } from '@/config/app/config-reader';
+import { UserActionType, requestWithActionType } from 'rd-component';
+import store from '@/redux/store/store';
 
 export function getCurrentUser() {
     const config = {
@@ -9,7 +9,8 @@ export function getCurrentUser() {
         url: '/post/user/current-user',
         headers: {'Content-Type': 'application/json'}
     };
-    return requestWithAction(config, getCurrentUserAction);
+    const actionTypeString: string = UserActionType[UserActionType.GET_CURRENT_USER];
+    return requestWithActionType(config, actionTypeString,store);
 }
 
 export function userLoginImpl(params: any) {
@@ -19,7 +20,19 @@ export function userLoginImpl(params: any) {
         headers: {'Content-Type': 'application/json'},
         params: params
     };
-    return requestWithAction(config, userLogin);
+    const actionTypeString: string = UserActionType[UserActionType.USER_LOGIN];
+    return requestWithActionType(config, actionTypeString,store);
+}
+
+export function userLoginByPhoneImpl(params: any) {
+    const config = {
+        method: 'post',
+        url: '/snap/user/login',
+        headers: {'Content-Type': 'application/json'},
+        data: JSON.stringify(params)
+    };
+    const actionTypeString: string = UserActionType[UserActionType.LOGIN_BY_PHONE];
+    return requestWithActionType(config, actionTypeString,store);
 }
 
 export function isLoggedIn(){

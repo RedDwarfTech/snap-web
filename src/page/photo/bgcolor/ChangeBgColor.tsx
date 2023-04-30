@@ -4,9 +4,13 @@ import './ChangeBgColor.css';
 import FileUploader from "@/component/upload/FileUploader";
 import { IUploadedFile } from "@/models/UploadedFile";
 import prevPic from "@/resource/image/nohpic.jpg";
-import { doUpload } from "@/service/FileService";
+import { doUpload, uploadBackgroundImage } from "@/service/FileService";
 import { fileRemBgAction } from "@/redux/action/file/FileAction";
-import { message } from "antd";
+import { Button, message } from "antd";
+import { RdColor, RdFile } from "rdjs-wheel";
+import { useSelector } from "react-redux";
+import React from "react";
+import { PhotoResponse } from "@/models/photo/PhotoResponse";
 
 const ChangeBgColor: React.FC = (props: any) => {
 
@@ -14,12 +18,27 @@ const ChangeBgColor: React.FC = (props: any) => {
     const [photoUrl, setPhotoUrl] = useState<File | null>();
     const [bgRemovedUrl, setBgRemovedUrl] = useState<string>();
     const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
+    const { photo } = useSelector((state: any) => state.photo)
+    const [remBgPhoto, setRemBgPhoto] = useState<PhotoResponse>();
+
+    React.useEffect(() => {
+        if (photo && Object.keys(photo).length > 0) {
+            setRemBgPhoto(photo);
+        }
+    }, [photo]);
 
     const onGetPhotoUrl = (file: File) => {
-        const formData = new FormData();
         if (file) {
-            formData.append('file', file);
-            doUpload(formData, '/snap/rembg', fileRemBgAction);
+            RdFile.fileToBase64(file).then(async (result: string) => {
+                try {
+                    const uploadParams = {
+                        base64Image: result
+                    };
+                    uploadBackgroundImage(uploadParams);
+                } catch (err) {
+                    console.log(err);
+                }
+            });
         }
     }
 
@@ -38,9 +57,10 @@ const ChangeBgColor: React.FC = (props: any) => {
     }
 
     const renderPreview = () => {
+        const baseUrl = 'data:image/png;base64,' + remBgPhoto?.foreground;
         return (
             <div className="snap-crop-preview">
-                <img src={bgRemovedUrl ? bgRemovedUrl : prevPic} style={{ backgroundColor: bgColor }} ></img>
+                 <img id="removed-img" src={remBgPhoto?.foreground ? baseUrl : prevPic} style={{ backgroundColor: bgColor }} ></img>
             </div>
         );
     }
@@ -49,6 +69,53 @@ const ChangeBgColor: React.FC = (props: any) => {
         if (!bgRemovedUrl || bgRemovedUrl != props.file.rembgfile) {
             setBgRemovedUrl(props.file.rembgfile);
         }
+    }
+
+    const downloadImpl = () => {
+        const element = document.getElementById('removed-img') as HTMLImageElement;
+        if (!element) {
+            return;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = element.naturalWidth;
+        canvas.height = element.naturalHeight;
+        const context = canvas.getContext('2d');
+        if (!context) {
+            return;
+        }
+        context.drawImage(element as HTMLImageElement, 0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        if (bgColor !== "origin") {
+            const pixelData = imageData.data;
+            const rgba = RdColor.colorToRGBA(bgColor);
+            if (!rgba) {
+                message.warning("不支持的背景色");
+                return;
+            }
+            const r = rgba[0];
+            const g = rgba[1];
+            const b = rgba[2];
+            for (let i = 0; i < pixelData.length; i += 4) {
+                const red = pixelData[i];
+                const green = pixelData[i + 1];
+                const blue = pixelData[i + 2];
+                const alpha = pixelData[i + 3];
+
+                // 判断当前像素是否为背景颜色
+                if (red === 0 && green === 0 && blue === 0 && alpha === 0) {
+                    pixelData[i] = r;
+                    pixelData[i + 1] = g;
+                    pixelData[i + 2] = b;
+                    pixelData[i + 3] = 255;
+                }
+            }
+        }
+        context.putImageData(imageData, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'image.png';
+        link.click();
     }
 
     return (
@@ -66,6 +133,7 @@ const ChangeBgColor: React.FC = (props: any) => {
                         <div className="photo-bg-blue" onClick={() => bgColorClick('blue')}></div>
                     </div>
                 </div>
+                <Button type="primary" onClick={() => downloadImpl()}>下载</Button>
             </div>
         </div>
     );

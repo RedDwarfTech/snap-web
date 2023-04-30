@@ -1,5 +1,16 @@
 import { IUploadedFile } from "@/models/UploadedFile";
 
+export type fileAction = uploadFileAction;
+
+export enum FileActionType {
+    UPLOAD_FILE,
+}
+
+export interface uploadFileAction {
+    type: FileActionType.UPLOAD_FILE;
+    data: any;
+}
+
 export function fileAction(data: IUploadedFile) {
     return {
         type: "UPLOAD_FILE",

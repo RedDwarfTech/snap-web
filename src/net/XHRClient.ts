@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
-import { ResponseHandler, WheelGlobal } from 'js-wheel';
+import { ResponseHandler, WheelGlobal } from 'rdjs-wheel';
 import store from '@/redux/store/store';
 import { message } from 'antd';
 
