@@ -6,7 +6,7 @@ import { Divider } from "antd";
 import React from "react";
 import { v4 as uuid } from 'uuid';
 import withConnect from "@/component/hoc/withConnect";
-import { IapProduct, doGetIapProduct, doPay } from "rd-component";
+import { IapProduct, PayService, doGetIapProduct, doPay } from "rd-component";
 import store from "@/redux/store/store";
 import Pay from "../pay/Pay";
 
@@ -22,13 +22,13 @@ const Goods: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-    if(iapproducts && iapproducts.length > 0) {
+    if (iapproducts && iapproducts.length > 0) {
       setProducts(iapproducts);
     }
   }, [iapproducts]);
 
   React.useEffect(() => {
-    if(formText && formText.length > 0) {
+    if (formText && formText.length > 0) {
       setPayFrame(formText);
     }
   }, [formText]);
@@ -36,13 +36,6 @@ const Goods: React.FC = () => {
   const getGoods = () => {
     doGetIapProduct(store);
   }
-
-  const handlePay = (row: any) => {
-    let param = {
-      productId: Number(row.id)
-    };
-    doPay(param,store);
-  };
 
   const productSubMenu = (serverDataSource: IapProduct[]) => {
     if (BaseMethods.isNull(serverDataSource)) {
@@ -52,14 +45,13 @@ const Goods: React.FC = () => {
     serverDataSource.sort((a: IapProduct, b: IapProduct) => b.sort - a.sort)
       .forEach((item: IapProduct) => {
         productSubList.push(
-        <div key= {uuid()} className="package">
-          <h2>{item.productTitle}</h2>
-          <p className="price">{item.price}<span>元</span></p>
-          <ul>
-            {vipItems(item.description)}
-          </ul>
-          <button onClick={() => handlePay(item)}>立即订阅</button>
-        </div>);
+          <div key={uuid()} className="package">
+            <h2>{item.productTitle}</h2>
+            <p className="price">{item.price}<span>元</span></p>
+            <ul>
+              {vipItems(item.description)}
+            </ul>
+          </div>);
       });
     return productSubList;
   }

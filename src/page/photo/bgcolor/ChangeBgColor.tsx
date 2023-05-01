@@ -10,7 +10,7 @@ import { RdColor, RdFile } from "rdjs-wheel";
 import { useSelector } from "react-redux";
 import React from "react";
 import { PhotoResponse } from "@/models/photo/PhotoResponse";
-import { doPay } from "rd-component";
+import { PayService, doPay } from "rd-component";
 import store from "@/redux/store/store";
 import Pay from "@/page/pay/Pay";
 
@@ -25,7 +25,7 @@ const ChangeBgColor: React.FC = (props: any) => {
     const [remBgPhoto, setRemBgPhoto] = useState<PhotoResponse>();
     const { formText } = useSelector((state: any) => state.rdRootReducer.pay);
     const [payForm, setPayForm] = useState<String>('');
-
+    const { order } = useSelector((state: any) => state.rdRootReducer.pay);
 
     React.useEffect(() => {
         if (photo && Object.keys(photo).length > 0) {
@@ -34,10 +34,16 @@ const ChangeBgColor: React.FC = (props: any) => {
     }, [photo]);
 
     React.useEffect(() => {
-        if(formText && formText.length > 0) {
+        if (order && order.id) {
+            setIsPayed(true);
+        }
+    }, [order]);
+
+    React.useEffect(() => {
+        if (formText && formText.length > 0) {
             setPayForm(formText);
         }
-    },[formText]);
+    }, [formText]);
 
     const onGetPhotoUrl = (file: File) => {
         if (file) {
@@ -72,7 +78,7 @@ const ChangeBgColor: React.FC = (props: any) => {
         const baseUrl = 'data:image/png;base64,' + remBgPhoto?.foreground;
         return (
             <div className="snap-crop-preview">
-                 <img id="removed-img" src={remBgPhoto?.foreground ? baseUrl : prevPic} style={{ backgroundColor: bgColor }} ></img>
+                <img id="removed-img" src={remBgPhoto?.foreground ? baseUrl : prevPic} style={{ backgroundColor: bgColor }} ></img>
             </div>
         );
     }
@@ -83,16 +89,15 @@ const ChangeBgColor: React.FC = (props: any) => {
         }
     }
 
-    const handlePrePay =() =>{
+    const handlePrePay = () => {
         let payReq = {
             productId: 20
         };
-        doPay(payReq,store);
+        doPay(payReq, store);
     }
 
-
     const downloadImpl = () => {
-        if(!isPayed){
+        if (!isPayed) {
             handlePrePay();
             return;
         }
@@ -162,17 +167,17 @@ const ChangeBgColor: React.FC = (props: any) => {
             <Pay></Pay>
             <div id="pay-mask" className="pay-mask"></div>
             <div id="pay-popup" className="popup">
-            <div className="pay-container" id="main">
-                <div className="pay-money">支付金额&nbsp;&nbsp;<span id="pay_price">2.00元</span></div>
-                <div>
-                    <div className="pay-img">
-                    <img  id="pay_qrcode" src="https://a9h.cn/addons/zzzy_idcard_pc/core/web/uploads/20230501/644f748c133cd.png" alt=""/>
+                <div className="pay-container" id="main">
+                    <div className="pay-money">支付金额&nbsp;&nbsp;<span id="pay_price">2.00元</span></div>
+                    <div>
+                        <div className="pay-img">
+                            <img id="pay_qrcode" src="https://a9h.cn/addons/zzzy_idcard_pc/core/web/uploads/20230501/644f748c133cd.png" alt="" />
+                        </div>
                     </div>
+                    <p className="pay-paragraph">
+                        <img className="pay-scan" src="/addons/zzzy_idcard_pc/core/web/statics/images/site/icon-wechat.png" alt="" />微信扫码支付
+                    </p>
                 </div>
-                <p className="pay-paragraph"> 
-                <img className="pay-scan" src="/addons/zzzy_idcard_pc/core/web/statics/images/site/icon-wechat.png" alt=""/>微信扫码支付
-                </p>
-            </div>
             </div>
         </div>
     );
