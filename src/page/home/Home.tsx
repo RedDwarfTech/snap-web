@@ -5,6 +5,7 @@ import About from "../about/About";
 import GenPhoto from "../photo/gen/GenPhoto";
 import { useState } from "react";
 import ChangeBgColor from "../photo/bgcolor/ChangeBgColor";
+import Goods from "../goods/Goods";
 
 const Home: React.FC = (props: any) => {
 
@@ -21,6 +22,8 @@ const Home: React.FC = (props: any) => {
             return (<About></About>);
         } else if (currentMenu === "bgcolor") {
             return (<ChangeBgColor></ChangeBgColor>);
+        } else if (currentMenu === "vip") {
+            return (<Goods></Goods>);
         }else {
             return (<div>开发中，敬请期待...</div>);
         }

@@ -5,27 +5,47 @@ import FileUploader from "@/component/upload/FileUploader";
 import { IUploadedFile } from "@/models/UploadedFile";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { doUpload, uploadBackgroundImage } from "@/service/FileService";
-import { fileRemBgAction } from "@/redux/action/file/FileAction";
 import { Button, message } from "antd";
 import { RdColor, RdFile } from "rdjs-wheel";
 import { useSelector } from "react-redux";
 import React from "react";
 import { PhotoResponse } from "@/models/photo/PhotoResponse";
+import { doPay } from "rd-component";
+import store from "@/redux/store/store";
+import Pay from "@/page/pay/Pay";
 
 const ChangeBgColor: React.FC = (props: any) => {
 
     const [bgColor, setBgColor] = useState('#ffffff');
+    const [isPayed, setIsPayed] = useState<boolean>(false);
     const [photoUrl, setPhotoUrl] = useState<File | null>();
     const [bgRemovedUrl, setBgRemovedUrl] = useState<string>();
     const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
     const { photo } = useSelector((state: any) => state.photo)
     const [remBgPhoto, setRemBgPhoto] = useState<PhotoResponse>();
+    const { formText } = useSelector((state: any) => state.rdRootReducer.pay);
+    const [payForm, setPayForm] = useState<String>('');
+
 
     React.useEffect(() => {
         if (photo && Object.keys(photo).length > 0) {
             setRemBgPhoto(photo);
         }
     }, [photo]);
+
+    React.useEffect(() => {
+        if(formText && formText.length > 0) {
+            setPayForm(formText);
+            const payMask = document.getElementById("pay-mask");
+            if(payMask){
+                payMask.style.display = "block";
+            }
+            const payPop = document.getElementById("pay-popup");
+            if(payPop){
+                payPop.style.display = "block";
+            }
+        }
+    },[formText]);
 
     const onGetPhotoUrl = (file: File) => {
         if (file) {
@@ -71,7 +91,19 @@ const ChangeBgColor: React.FC = (props: any) => {
         }
     }
 
+    const handlePrePay =() =>{
+        let payReq = {
+            productId: 20
+        };
+        doPay(payReq,store);
+    }
+
+
     const downloadImpl = () => {
+        if(!isPayed){
+            handlePrePay();
+            return;
+        }
         const element = document.getElementById('removed-img') as HTMLImageElement;
         if (!element) {
             return;
@@ -134,6 +166,21 @@ const ChangeBgColor: React.FC = (props: any) => {
                     </div>
                 </div>
                 <Button type="primary" onClick={() => downloadImpl()}>下载</Button>
+            </div>
+            <Pay></Pay>
+            <div id="pay-mask" className="pay-mask"></div>
+            <div id="pay-popup" className="popup">
+            <div className="pay-container" id="main">
+                <div className="pay-money">支付金额&nbsp;&nbsp;<span id="pay_price">2.00元</span></div>
+                <div>
+                    <div className="pay-img">
+                    <img  id="pay_qrcode" src="https://a9h.cn/addons/zzzy_idcard_pc/core/web/uploads/20230501/644f748c133cd.png" alt=""/>
+                    </div>
+                </div>
+                <p className="pay-paragraph"> 
+                <img className="pay-scan" src="/addons/zzzy_idcard_pc/core/web/statics/images/site/icon-wechat.png" alt=""/>微信扫码支付
+                </p>
+            </div>
             </div>
         </div>
     );

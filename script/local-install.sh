@@ -1,0 +1,1 @@
+npm install ~/source/reddwarf/frontend/rd-component/rd-component-0.1.24.tgz

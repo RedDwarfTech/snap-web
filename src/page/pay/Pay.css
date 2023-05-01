@@ -1,0 +1,29 @@
+.App {
+  text-align: center;
+}
+
+.qrcode{
+  height: 200px;
+  width: 200px;
+}
+
+.product{
+  font-size: 25px;
+  font-weight: bold;
+  color: #0f8bc9 !important; 
+}
+
+.product-price{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.pay-container {
+  justify-content: center;
+  align-items: center;
+  text-align: center
+}
+
+.card-content {
+  text-align: center;
+}
