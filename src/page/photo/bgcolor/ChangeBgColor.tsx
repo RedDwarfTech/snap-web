@@ -36,14 +36,6 @@ const ChangeBgColor: React.FC = (props: any) => {
     React.useEffect(() => {
         if(formText && formText.length > 0) {
             setPayForm(formText);
-            const payMask = document.getElementById("pay-mask");
-            if(payMask){
-                payMask.style.display = "block";
-            }
-            const payPop = document.getElementById("pay-popup");
-            if(payPop){
-                payPop.style.display = "block";
-            }
         }
     },[formText]);
 
