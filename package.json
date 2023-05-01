@@ -18,7 +18,7 @@
     "customize-cra": "^1.0.0",
     "js-wheel": "https://github.com/jiangxiaoqiang/js-wheel.git",
     "query-string": "^8.1.0",
-    "rd-component": "^0.1.28",
+    "rd-component": "^0.1.29",
     "rdjs-wheel": "0.0.1",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",

@@ -1,11 +1,14 @@
 import { useRef, useState } from "react";
 import './FileUploader.css';
+import { UserService } from "rd-component";
+import { message } from "antd";
 
 export type FileUploaderProps = {
     onGetPhotoUrl: (url: File) => void;
+    loginRequired: boolean;
 };
 
-const FileUploader: React.FC<FileUploaderProps> = (props: any) => {
+const FileUploader: React.FC<FileUploaderProps> = (props: FileUploaderProps) => {
 
     const inputRef = useRef<HTMLInputElement>(null);
     const [photoUrl, setPhotoUrl] = useState<File | null>();
@@ -23,6 +26,12 @@ const FileUploader: React.FC<FileUploaderProps> = (props: any) => {
     }
 
     const handleFileChangeBtnClick = () => {
+        if (props.loginRequired) {
+            const isLoggedIn = UserService.isLoggedIn();
+            if (!isLoggedIn) {
+                message.info("请先登录");
+            }
+        }
         if (inputRef && inputRef.current) {
             inputRef.current.click();
         }

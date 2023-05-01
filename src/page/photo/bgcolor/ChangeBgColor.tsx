@@ -2,15 +2,14 @@ import withConnect from "@/component/hoc/withConnect";
 import { useState } from "react";
 import './ChangeBgColor.css';
 import FileUploader from "@/component/upload/FileUploader";
-import { IUploadedFile } from "@/models/UploadedFile";
 import prevPic from "@/resource/image/nohpic.jpg";
-import { doUpload, uploadBackgroundImage } from "@/service/FileService";
+import { uploadBackgroundImage } from "@/service/FileService";
 import { Button, message } from "antd";
 import { RdColor, RdFile } from "rdjs-wheel";
 import { useSelector } from "react-redux";
 import React from "react";
 import { PhotoResponse } from "@/models/photo/PhotoResponse";
-import { PayService, doPay } from "rd-component";
+import { doPay } from "rd-component";
 import store from "@/redux/store/store";
 import Pay from "@/page/pay/Pay";
 
@@ -18,9 +17,7 @@ const ChangeBgColor: React.FC = (props: any) => {
 
     const [bgColor, setBgColor] = useState('#ffffff');
     const [isPayed, setIsPayed] = useState<boolean>(false);
-    const [photoUrl, setPhotoUrl] = useState<File | null>();
     const [bgRemovedUrl, setBgRemovedUrl] = useState<string>();
-    const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
     const { photo } = useSelector((state: any) => state.photo)
     const [remBgPhoto, setRemBgPhoto] = useState<PhotoResponse>();
     const { formText } = useSelector((state: any) => state.rdRootReducer.pay);
@@ -97,10 +94,6 @@ const ChangeBgColor: React.FC = (props: any) => {
     }
 
     const downloadImpl = () => {
-        if (!isPayed) {
-            handlePrePay();
-            return;
-        }
         const element = document.getElementById('removed-img') as HTMLImageElement;
         if (!element) {
             return;
@@ -147,12 +140,34 @@ const ChangeBgColor: React.FC = (props: any) => {
         link.click();
     }
 
+    const prevDownload = () => {
+        if(payForm){
+            return;
+        }
+        if (!isPayed) {
+            handlePrePay();
+        }else{
+            downloadImpl();
+        }
+    }
+
+    const renderDownloadedImage = () => {
+        if(!remBgPhoto){
+            return <div></div>;
+        }
+        return (
+            <div className="dl">
+                <Button type="primary" onClick={() => prevDownload()}>下载</Button>
+            </div>
+        );
+    }
+
     return (
         <div className="bgchange-container">
             <h2>证件照换底色</h2>
             <div>
                 <div className="crop-intro">
-                    <FileUploader onGetPhotoUrl={(value) => onGetPhotoUrl(value)} ></FileUploader>
+                    <FileUploader onGetPhotoUrl={(value) => onGetPhotoUrl(value)} loginRequired={true} ></FileUploader>
                 </div>
                 {renderPreview()}
                 <div className="photo-bg">
@@ -162,7 +177,7 @@ const ChangeBgColor: React.FC = (props: any) => {
                         <div className="photo-bg-blue" onClick={() => bgColorClick('blue')}></div>
                     </div>
                 </div>
-                <Button type="primary" onClick={() => downloadImpl()}>下载</Button>
+                {renderDownloadedImage()}
             </div>
             <Pay></Pay>
             <div id="pay-mask" className="pay-mask"></div>

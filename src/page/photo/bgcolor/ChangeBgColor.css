@@ -15,6 +15,14 @@
     background-color: #f3f3f3;
 }
 
+.dl {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 .pay-mask {
     position: fixed;
     top: 0;
@@ -63,7 +71,7 @@
     margin-right: 4px;
 }
 
-.popup{
+.popup {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -75,8 +83,8 @@
     z-index: 101;
     overflow: auto;
     display: none;
-  }
+}
 
-  .popup .pay-container{
+.popup .pay-container {
     padding: 20px;
-  }
+}
