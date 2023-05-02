@@ -1,45 +1,53 @@
 import "./GenPhoto.css";
 import prevPic from "@/resource/image/nohpic.jpg";
-import { MouseEventHandler, useEffect, useRef, useState } from "react";
-import { doUpload, getDownloadFileUrl } from "@/service/FileService";
+import { MouseEventHandler, useRef, useState } from "react";
+import { clearPhoto, doUpload, downloadPhoto, getDownloadFileUrl } from "@/service/FileService";
 import { IUploadedFile } from "@/models/UploadedFile";
 import store from "@/redux/store/store";
-import { fileAction, fileClearAction } from "@/redux/action/file/FileAction";
 import { ICropParams } from "@/models/request/photo/CropParams";
 import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
+import FileUploader from "@/component/upload/FileUploader";
+import { RdFile } from "js-wheel";
+import React from "react";
+import { IOrder, PayService, doPay } from "rd-component";
 
 const { Option } = Select;
 
+const GenPhoto: React.FC = () => {
 
-const GenPhoto: React.FC = (props: any) => {
-
-    const [photoUrl, setPhotoUrl] = useState<File | null>();
+    const [photoUrl, setPhotoUrl] = useState<String>();
+    const [generated, setGenerated] = useState<boolean>(false);
     const [photoSize, setPhotoSize] = useState<string>();
     const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
     const inputRef = useRef<HTMLInputElement>(null);
     const [photoType, setPhotoType] = useState<String[]>([]);
-    const { rembgfile,downloadfile,file } = useSelector((state:any) => state.file)
+    const { file } = useSelector((state:any) => state.rdRootReducer.file)
     const [bgColor, setBgColor] = useState('#ffffff');
+    const [payForm, setPayForm] = useState<String>('');
+    const [downloadFileId, setDownloadFileId] = useState<string>('');
+    const [isPayed, setIsPayed] = useState<boolean>(false);
+    const { order } = useSelector((state: any) => state.rdRootReducer.pay);
 
-    useEffect(()=>{
-        if(!file|| Object.keys(file).length===0){
-            setPhotoUrl(null);
-            setUploadedFile(null);
+    React.useEffect(()=>{
+        if(file && Object.keys(file).length>0){
+            setPhotoUrl(file.markedPhoto);
+            setGenerated(true);
+            setDownloadFileId(file.fileId);
         }
-    },[rembgfile,downloadfile,file]);
+    },[file]);
 
-    useEffect(() => {
+    React.useEffect(() => {
+        if (order && order.id) {
+            setIsPayed(true);
+        }
+    }, [order]);
+
+    React.useEffect(() => {
         readPhotoType();
     }, []);
-
-    //if (props && props.file && Object.keys(props.file.file).length > 0) {
-    //    if (!uploadedFile || uploadedFile.file_id !== props.file.file.file_id) {
-            //setUploadedFile(props.file.file)
-    //    }
-    //}
 
     const readPhotoType = () => {
         fetch('./phototype.txt')
@@ -71,18 +79,37 @@ const GenPhoto: React.FC = (props: any) => {
         return photoList;
     }
 
-    const handleFileChangeBtnClick = () => {
-        if (inputRef && inputRef.current) {
-            inputRef.current.click();
-        }
+    const handlePrePay = () => {
+        if (process.env.NODE_ENV === 'production') {
+            let payReq = {
+                productId: 21
+            };
+            doPay(payReq, store);
+        }else{
+            const order:IOrder = {
+                id: downloadFileId
+            };
+            PayService.setPayedInfo(order,store);
+        }        
     }
 
     const downloadFile = () => {
-        if (uploadedFile && uploadedFile.file_id) {
-            // get the file path
-            getDownloadFileUrl(uploadedFile.file_id).then((data) => {
+        if(payForm){
+            return;
+        }
+        if (!isPayed) {
+            handlePrePay();
+        }else{
+            downloadImpl();
+        }
+    }
+
+    const downloadImpl = ()=>{
+        if (downloadFileId) {
+            getDownloadFileUrl(downloadFileId).then((data) => {
                 if (data && data.result) {
-                    downloadFileImpl(data.result, "我的证件照")
+                    setPhotoUrl(data.result.idPhoto);
+                    downloadPhoto(bgColor,"gen-preview");
                 }
             });
         }
@@ -91,7 +118,8 @@ const GenPhoto: React.FC = (props: any) => {
     const reuploadFile: MouseEventHandler<HTMLButtonElement> = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        setPhotoUrl(null);
+        setPhotoUrl('');
+        setGenerated(false);
         if (inputRef && inputRef.current) {
             inputRef.current.value = '';
             clearPhotho();
@@ -99,14 +127,18 @@ const GenPhoto: React.FC = (props: any) => {
         }
     }
 
-    const handleFileChange = (event: any) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+    const onGetPhotoUrl = (file: File) => {
         if (file) {
-            reader.readAsDataURL(file);
-            reader.onloadend = () => {
-                setPhotoUrl(file);
-            };
+            RdFile.fileToBase64(file).then(async (result: string) => {
+                try {
+                    const uploadParams = {
+                        base64Image: result
+                    };
+                    setPhotoUrl(result);
+                } catch (err) {
+                    console.log(err);
+                }
+            });
         }
     }
 
@@ -122,54 +154,33 @@ const GenPhoto: React.FC = (props: any) => {
         }
         const width = (parseFloat(photoSize.split(",")[1].trim())*300)/2.54;
         const height = (parseFloat(photoSize.split(",")[2].trim())*300)/2.54;
-        const formData = new FormData();
         if (photoUrl) {
             const cropParams: ICropParams = {
                 crop: false,
                 width: parseInt(width.toString()),
                 height: parseInt(height.toString())
             };
-            formData.append('file', photoUrl);
-            formData.append('params', JSON.stringify(cropParams));
-            doUpload(formData,'/snap/upload',fileAction);
+            const idMakerParams = {
+                base64Image: photoUrl
+            };
+            doUpload(idMakerParams,'/snap/photo/id/gen');
         }
     }
 
     const clearPhotho = () => {
-        store.dispatch(fileClearAction(null))
-    }
-
-    function downloadFileImpl(url: string, filename: string) {
-        fetch(url)
-            .then(res => res.blob())
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-            });
+        clearPhoto();
     }
 
     const renderPreview = () => {
-        if (uploadedFile && uploadedFile.watermark_path) {
-            return (
-                <div className="snap-preview">
-                    <img src={uploadedFile.watermark_path} style={{ backgroundColor: bgColor }}></img>
-                </div>
-            );
-        }
         return (
             <div className="snap-preview">
-                <img src={photoUrl ? URL.createObjectURL(photoUrl) : prevPic} ></img>
+                <img id="gen-preview"  src={photoUrl ? photoUrl.toString() : prevPic} style={{ backgroundColor: bgColor }}></img>
             </div>
         );
     }
 
     const renderUploadImage = () => {
-        if (uploadedFile && uploadedFile.watermark_path) {
+        if (generated) {
             return (<button onClick={downloadFile}>下载</button>);
         }else{
             return (
@@ -201,8 +212,7 @@ const GenPhoto: React.FC = (props: any) => {
     return (<div className="snap-container">
                 <div className="snap-intro">
                     {/* <h3>一键生成证件照</h3><div>支持png文件</div> */}
-                    <button onClick={() => handleFileChangeBtnClick()}>选择文件</button>
-                    <input type="file" hidden onChange={(e) => handleFileChange(e)} ref={inputRef}></input>
+                    <FileUploader onGetPhotoUrl={(value) => onGetPhotoUrl(value)} loginRequired={true} ></FileUploader>
                 </div>
                 <div className="snap-oper">
                     {renderPreview()}

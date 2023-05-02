@@ -3,7 +3,7 @@ import { useState } from "react";
 import './ChangeBgColor.css';
 import FileUploader from "@/component/upload/FileUploader";
 import prevPic from "@/resource/image/nohpic.jpg";
-import { uploadBackgroundImage } from "@/service/FileService";
+import { downloadPhoto, uploadBackgroundImage } from "@/service/FileService";
 import { Button, message } from "antd";
 import { RdColor, RdFile } from "rdjs-wheel";
 import { useSelector } from "react-redux";
@@ -93,53 +93,6 @@ const ChangeBgColor: React.FC = (props: any) => {
         doPay(payReq, store);
     }
 
-    const downloadImpl = () => {
-        const element = document.getElementById('removed-img') as HTMLImageElement;
-        if (!element) {
-            return;
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = element.naturalWidth;
-        canvas.height = element.naturalHeight;
-        const context = canvas.getContext('2d');
-        if (!context) {
-            return;
-        }
-        context.drawImage(element as HTMLImageElement, 0, 0, canvas.width, canvas.height);
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        if (bgColor !== "origin") {
-            const pixelData = imageData.data;
-            const rgba = RdColor.colorToRGBA(bgColor);
-            if (!rgba) {
-                message.warning("不支持的背景色");
-                return;
-            }
-            const r = rgba[0];
-            const g = rgba[1];
-            const b = rgba[2];
-            for (let i = 0; i < pixelData.length; i += 4) {
-                const red = pixelData[i];
-                const green = pixelData[i + 1];
-                const blue = pixelData[i + 2];
-                const alpha = pixelData[i + 3];
-
-                // 判断当前像素是否为背景颜色
-                if (red === 0 && green === 0 && blue === 0 && alpha === 0) {
-                    pixelData[i] = r;
-                    pixelData[i + 1] = g;
-                    pixelData[i + 2] = b;
-                    pixelData[i + 3] = 255;
-                }
-            }
-        }
-        context.putImageData(imageData, 0, 0);
-        const dataURL = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = dataURL;
-        link.download = 'image.png';
-        link.click();
-    }
-
     const prevDownload = () => {
         if(payForm){
             return;
@@ -147,7 +100,7 @@ const ChangeBgColor: React.FC = (props: any) => {
         if (!isPayed) {
             handlePrePay();
         }else{
-            downloadImpl();
+            downloadPhoto(bgColor,"removed-img");
         }
     }
 

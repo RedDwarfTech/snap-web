@@ -30,6 +30,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props: FileUploaderProps) => 
             const isLoggedIn = UserService.isLoggedIn();
             if (!isLoggedIn) {
                 message.info("请先登录");
+                return;
             }
         }
         if (inputRef && inputRef.current) {
