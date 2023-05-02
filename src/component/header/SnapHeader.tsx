@@ -57,10 +57,6 @@ const SnapHeader: React.FC<HeaderFormProps> = (props) => {
     handleMenuClick('profile');
   }
 
-  const showSubscribe = () => {
-    handleMenuClick('vip');
-  }
-
   const avatarClick = () => {
     const dropdown = document.getElementById("dropdown");
     if (dropdown) {
@@ -79,8 +75,7 @@ const SnapHeader: React.FC<HeaderFormProps> = (props) => {
         <a id="user-menu">
           {avatarUrl ? <Avatar size={40} src={avatarUrl} onClick={avatarClick} /> : <Avatar onClick={avatarClick} size={40} >Me</Avatar>}
           <div id="dropdown" className="dropdown-content">
-            <div onClick={showSubscribe}><PayCircleOutlined /><span>订阅</span></div>
-            <div onClick={showUserProfile}><ControlOutlined /><span>控制台</span></div>
+            {/**<div onClick={showUserProfile}><ControlOutlined /><span>控制台</span></div>**/}
             <div onClick={doLoginOut}><LogoutOutlined /><span>登出</span></div>
           </div>
         </a>);
