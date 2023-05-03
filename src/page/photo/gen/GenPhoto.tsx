@@ -130,6 +130,7 @@ const GenPhoto: React.FC = () => {
         event.preventDefault();
         event.stopPropagation();
         setPhotoUrl('');
+        setOriginPhoto('');
         setGenerated(false);
         if (inputRef && inputRef.current) {
             inputRef.current.value = '';

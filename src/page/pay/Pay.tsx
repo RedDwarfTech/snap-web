@@ -6,25 +6,29 @@ import { useSelector } from "react-redux";
 const Pay: React.FC = () => {
 
   const { formText } = useSelector((state: any) => state.rdRootReducer.pay);
-
   const [payFrame, setPayFrame] = useState('');
 
-  React.useEffect(()=>{
-    if(formText){
+  React.useEffect(() => {
+    if (formText) {
       setPayFrame(formText);
     }
-  },[formText]);
+  }, [formText]);
 
-  return (
-    <div>
-      <iframe srcDoc={payFrame}
-            width="600"
-            height="600"
-            frameBorder="no"
-            scrolling="no"
-          ></iframe>
-    </div>
-  );
+  if (formText && formText.length > 0) {
+    return (<div></div>);
+  }
+  else {
+    return (
+      <div>
+        <iframe srcDoc={payFrame}
+          width="600"
+          height="600"
+          frameBorder="no"
+          scrolling="no"
+        ></iframe>
+      </div>
+    );
+  }
 }
 
 export default withConnect(Pay);
