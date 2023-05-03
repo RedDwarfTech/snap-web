@@ -1,5 +1,5 @@
 export interface ICropParams {
-    crop: boolean;
+    base64Image: String;
     width: number;
     height: number;
     //type: string;

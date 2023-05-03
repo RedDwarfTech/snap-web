@@ -136,18 +136,19 @@ const GenPhoto: React.FC = () => {
     }
 
     const onGetPhotoUrl = (file: File) => {
-        if (file) {
-            RdFile.fileToBase64(file).then(async (result: string) => {
-                try {
-                    const uploadParams = {
-                        base64Image: result
-                    };
-                    setPhotoUrl(result);
-                } catch (err) {
-                    console.log(err);
-                }
-            });
+        if (!file) {
+            return;
         }
+        RdFile.fileToBase64(file).then(async (result: string) => {
+            try {
+                const uploadParams = {
+                    base64Image: result
+                };
+                setPhotoUrl(result);
+            } catch (err) {
+                console.log(err);
+            }
+        });
     }
 
     const handleSubmit = (event: any) => {
@@ -164,14 +165,11 @@ const GenPhoto: React.FC = () => {
         const height = (parseFloat(photoSize.split(",")[2].trim()) * 300) / 2.54;
         if (photoUrl) {
             const cropParams: ICropParams = {
-                crop: false,
+                base64Image: photoUrl,
                 width: parseInt(width.toString()),
                 height: parseInt(height.toString())
             };
-            const idMakerParams = {
-                base64Image: photoUrl
-            };
-            doUpload(idMakerParams, '/snap/photo/id/gen');
+            doUpload(cropParams, '/snap/photo/id/gen');
         }
     }
 
