@@ -15,9 +15,6 @@ const Pay: React.FC = () => {
   }, [formText]);
 
   if (formText && formText.length > 0) {
-    return (<div></div>);
-  }
-  else {
     return (
       <div>
         <iframe srcDoc={payFrame}
@@ -28,6 +25,9 @@ const Pay: React.FC = () => {
         ></iframe>
       </div>
     );
+  }
+  else {
+    return (<div></div>);
   }
 }
 
