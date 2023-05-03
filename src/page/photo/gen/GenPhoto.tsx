@@ -14,19 +14,22 @@ import { RdFile } from "js-wheel";
 import React from "react";
 import { IOrder, PayService, doPay } from "rd-component";
 import Pay from "@/page/pay/Pay";
+import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
+import { UserService } from "rd-component";
 
 const { Option } = Select;
 
 const GenPhoto: React.FC = () => {
 
     const [photoUrl, setPhotoUrl] = useState<String>();
+    const [originPhoto, setOriginPhoto] = useState<String>();
     const [generated, setGenerated] = useState<boolean>(false);
     const [photoSize, setPhotoSize] = useState<string>();
     const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
     const inputRef = useRef<HTMLInputElement>(null);
     const [photoType, setPhotoType] = useState<String[]>([]);
     const { file } = useSelector((state: any) => state.rdRootReducer.file)
-    const [bgColor, setBgColor] = useState('#ffffff');
+    const [bgColor, setBgColor] = useState('#438edb');
     const [payForm, setPayForm] = useState<String>('');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
     const [isPayed, setIsPayed] = useState<boolean>(false);
@@ -141,10 +144,7 @@ const GenPhoto: React.FC = () => {
         }
         RdFile.fileToBase64(file).then(async (result: string) => {
             try {
-                const uploadParams = {
-                    base64Image: result
-                };
-                setPhotoUrl(result);
+                setOriginPhoto(result);
             } catch (err) {
                 console.log(err);
             }
@@ -153,7 +153,7 @@ const GenPhoto: React.FC = () => {
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
-        if (photoUrl === undefined || !photoUrl) {
+        if (originPhoto === undefined || !originPhoto) {
             message.info("请选择文件");
             return;
         }
@@ -163,9 +163,9 @@ const GenPhoto: React.FC = () => {
         }
         const width = (parseFloat(photoSize.split(",")[1].trim()) * 300) / 2.54;
         const height = (parseFloat(photoSize.split(",")[2].trim()) * 300) / 2.54;
-        if (photoUrl) {
+        if (originPhoto) {
             const cropParams: ICropParams = {
-                base64Image: photoUrl,
+                base64Image: originPhoto,
                 width: parseInt(width.toString()),
                 height: parseInt(height.toString())
             };
@@ -180,7 +180,8 @@ const GenPhoto: React.FC = () => {
     const renderPreview = () => {
         return (
             <div className="snap-preview">
-                <img id="gen-preview" src={photoUrl ? photoUrl.toString() : prevPic} style={{ backgroundColor: bgColor }}></img>
+                <div className="snap-preview-header">证件照</div>
+                {photoUrl ? <img id="gen-preview" src={photoUrl ? photoUrl.toString() : prevPic} style={{ backgroundColor: bgColor }}></img> : <div className="gen-preview-div"></div>}
             </div>
         );
     }
@@ -207,7 +208,7 @@ const GenPhoto: React.FC = () => {
                 setBgColor('#FF0000');
                 break;
             case 'blue':
-                setBgColor('#0000FF');
+                setBgColor('#438edb');
                 break;
             default:
                 message.warning("不支持的背景颜色");
@@ -215,14 +216,57 @@ const GenPhoto: React.FC = () => {
         }
     }
 
+    const handleFileChange = (event: any) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        if (file) {
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                setOriginPhoto(file);
+                onGetPhotoUrl(file);
+            };
+        }
+    }
+    const handleFileChangeBtnClick = () => {
+        if (true) {
+            const isLoggedIn = UserService.isLoggedIn();
+            if (!isLoggedIn) {
+                message.info("请先登录");
+                return;
+            }
+        }
+        if (inputRef && inputRef.current) {
+            inputRef.current.click();
+        }
+    }
+
+    const renderOriginPhoto = () => {
+        if (originPhoto) {
+            return (
+                <img className="origin-img-preview" src={originPhoto.toString()}></img>
+            );
+        } else {
+            return (
+                <div className="upload-area" onClick={() => handleFileChangeBtnClick()}>
+                    <img src={uploadIcon}></img>
+                    <input type="file" hidden onChange={(e) => handleFileChange(e)} ref={inputRef}></input>
+                </div>
+            );
+        }
+    }
+
     return (
         <div className="snap-container">
-            <div className="snap-intro">
-                {/* <h3>一键生成证件照</h3><div>支持png文件</div> */}
-                <FileUploader onGetPhotoUrl={(value) => onGetPhotoUrl(value)} loginRequired={true} ></FileUploader>
-            </div>
             <div className="snap-oper">
-                {renderPreview()}
+                <div className="snap-preview-area">
+                    <div className="snap-upload">
+                        <div className="snap-upload-header">上传图片</div>
+                        <div className="snap-upload-impl">
+                            {renderOriginPhoto()}
+                        </div>
+                    </div>
+                    {renderPreview()}
+                </div>
                 <div className="snap-oper-btn">
                     <div className="snap-params">
                         <div className="photo-size">
