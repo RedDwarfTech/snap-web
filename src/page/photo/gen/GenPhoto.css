@@ -53,6 +53,15 @@
     align-items: center;
     justify-content: center;
     flex-grow: 1;
+    border-width: 1px;
+    border-color: gray;
+}
+
+.snap-upload-impl-dash {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
     border: dashed;
     border-width: 1px;
     border-color: gray;

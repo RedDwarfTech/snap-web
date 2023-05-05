@@ -262,7 +262,7 @@ const GenPhoto: React.FC = () => {
                 <div className="snap-preview-area">
                     <div className="snap-upload">
                         <div className="snap-upload-header">上传图片</div>
-                        <div className="snap-upload-impl">
+                        <div className={originPhoto?"snap-upload-impl":"snap-upload-impl-dash"}>
                             {renderOriginPhoto()}
                         </div>
                     </div>
