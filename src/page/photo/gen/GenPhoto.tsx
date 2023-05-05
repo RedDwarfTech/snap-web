@@ -105,12 +105,10 @@ const GenPhoto: React.FC = () => {
     }
 
     const downloadFile = () => {
-        if (payForm) {
-            return;
-        }
-        if (!isPayed) {
+        if (!isPayed && !payForm) {
             handlePrePay();
-        } else {
+        } 
+        if(isPayed){
             downloadImpl();
         }
     }
