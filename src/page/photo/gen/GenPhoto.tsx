@@ -33,8 +33,7 @@ const GenPhoto: React.FC = () => {
     const [payForm, setPayForm] = useState<String>('');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
     const [isPayed, setIsPayed] = useState<boolean>(false);
-    const { order } = useSelector((state: any) => state.rdRootReducer.pay);
-    const { formText } = useSelector((state: any) => state.rdRootReducer.pay);
+    const { formText,order } = useSelector((state: any) => state.rdRootReducer.pay);
 
     React.useEffect(() => {
         if (file && Object.keys(file).length > 0) {

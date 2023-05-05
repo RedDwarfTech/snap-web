@@ -1,16 +1,15 @@
 import React from "react";
-import { connect } from "react-redux";
 import "./PaySuccess.css"
 import queryString from 'query-string';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
 import { IOrder, PayService } from "rd-component";
 import store from "@/redux/store/store";
+import withConnect from "@/component/hoc/withConnect";
 
 const PaySuccess: React.FC = () => {
 
     const location = useLocation();
-
     const currentTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     if (location.search == null) {
@@ -41,17 +40,5 @@ const PaySuccess: React.FC = () => {
     }
 }
 
-const mapStateToProps = (state: { pay: any; }) => ({
-    pay: state.pay
-});
-
-const mapDispatchToProps = (dispatch: (arg0: any) => void) => {
-    return {
-        createOrder: () => {
-
-        }
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PaySuccess);
+export default withConnect(PaySuccess);
 
