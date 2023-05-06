@@ -61,6 +61,7 @@ export function downloadPhoto(bgColor: string, imgId: string) {
     if (!context) {
         return;
     }
+    context.imageSmoothingEnabled = true;
     context.drawImage(element as HTMLImageElement, 0, 0, canvas.width, canvas.height);
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     if (bgColor !== "origin") {
