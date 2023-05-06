@@ -9,7 +9,7 @@ import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
-import { RdFile } from "js-wheel";
+import { REST, RdFile, ResponseHandler } from "js-wheel";
 import React from "react";
 import { IOrder, OrderService, PayService, doPay } from "rd-component";
 import Pay from "@/page/pay/Pay";
@@ -29,9 +29,8 @@ const GenPhoto: React.FC = () => {
     const [photoType, setPhotoType] = useState<String[]>([]);
     const { file } = useSelector((state: any) => state.rdRootReducer.file)
     const [bgColor, setBgColor] = useState('#438edb');
-    const [payForm, setPayForm] = useState<String>('');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
-    const [isPayed, setIsPayed] = useState<boolean>(false);
+    const [isPaying, setIsPaying] = useState<boolean>(false);
     const [createdOrderInfo, setCreatedOrderInfo] = useState<{formText: string,orderId:string}>();
     const { createdOrder, order } = useSelector((state: any) => state.rdRootReducer.pay);
 
@@ -44,14 +43,7 @@ const GenPhoto: React.FC = () => {
     }, [file]);
 
     React.useEffect(() => {
-        if (order && order.id) {
-            setIsPayed(true);
-        }
-    }, [order]);
-
-    React.useEffect(() => {
         if (createdOrder && Object.keys(createdOrder).length > 0) {
-            setPayForm(createdOrder.formText);
             setCreatedOrderInfo(createdOrder);
         }
     }, [createdOrder]);
@@ -105,15 +97,19 @@ const GenPhoto: React.FC = () => {
     }
 
     const downloadFile = () => {
-        if (!payForm) {
+        if (!isPaying) {
+            setIsPaying(true);
             handlePrePay();
         }
         if (createdOrderInfo && createdOrderInfo.orderId != null ) {
             const orderId = createdOrderInfo.orderId;
             if (orderId) {
-                OrderService.getOrderStatus(orderId, store).then((data: any) => {
-                    if (isPayed) {
-                        downloadImpl();
+                OrderService.getOrderStatus(orderId, store).then((resp:any) => {
+                    if(ResponseHandler.responseSuccess(resp)){
+                        if(Number(resp.result.orderStatus) === 1){
+                            setIsPaying(false);
+                            downloadImpl();
+                        }
                     }
                 });
             }

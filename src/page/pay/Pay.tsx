@@ -5,16 +5,16 @@ import { useSelector } from "react-redux";
 
 const Pay: React.FC = () => {
 
-  const { formText } = useSelector((state: any) => state.rdRootReducer.pay);
+  const { createdOrder } = useSelector((state: any) => state.rdRootReducer.pay);
   const [payFrame, setPayFrame] = useState('');
 
   React.useEffect(() => {
-    if (formText) {
-      setPayFrame(formText);
+    if (createdOrder && Object.keys(createdOrder).length > 0) {
+      setPayFrame(createdOrder.formText);
     }
-  }, [formText]);
+  }, [createdOrder]);
 
-  if (formText && formText.length > 0) {
+  if (payFrame && payFrame.length > 0) {
     return (
       <div>
         <iframe srcDoc={payFrame}
