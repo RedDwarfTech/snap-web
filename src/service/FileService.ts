@@ -88,7 +88,7 @@ export function downloadPhoto(bgColor: string, imgId: string) {
                 pixelData[i] = r;
                 pixelData[i + 1] = g;
                 pixelData[i + 2] = b;
-                pixelData[i + 3] = 255;
+                pixelData[i + 3] = 0;
             }
         }
     }
