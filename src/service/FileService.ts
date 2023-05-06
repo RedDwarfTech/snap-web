@@ -135,25 +135,20 @@ export function downloadPhotoLegacy(bgColor: string, imgId: string) {
     link.click();
 }
 
-export function saveImageToFile(imgId: string) {
-    const element = document.getElementById(imgId) as HTMLImageElement;
-    if (!element) {
-        return;
+export function saveBase64AsFile(base64String: string, fileName: string)  {
+    const b64toBlob = (b64: string, type: string): Blob => {
+      const byteString = atob(b64.split(',')[1]);
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([ab], { type: type });
     }
-    const canvas = document.createElement('canvas');
-    canvas.width = element.naturalWidth;
-    canvas.height = element.naturalHeight;
-    const context = canvas.getContext('2d');
-    if (!context) {
-        return;
-    }
-    context.imageSmoothingEnabled = true;
-    context.drawImage(element as HTMLImageElement, 0, 0, canvas.width, canvas.height);
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    context.putImageData(imageData, 0, 0);
-    const dataURL = canvas.toDataURL('image/png');
+    const blob = b64toBlob(base64String, 'image/png');
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = dataURL;
-    link.download = 'image.png';
+    link.href = url;
+    link.download = fileName;
     link.click();
 }

@@ -1,7 +1,7 @@
 import "./GenPhoto.css";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useRef, useState } from "react";
-import { clearPhoto, doUpload, downloadPhoto, downloadPhotoLegacy, getDownloadFileUrl, saveImageToFile } from "@/service/FileService";
+import { clearPhoto, doUpload, downloadPhoto, downloadPhotoLegacy, getDownloadFileUrl, saveBase64AsFile, saveImageToFile } from "@/service/FileService";
 import { IUploadedFile } from "@/models/UploadedFile";
 import store from "@/redux/store/store";
 import { ICropParams } from "@/models/request/photo/CropParams";
@@ -122,7 +122,7 @@ const GenPhoto: React.FC = () => {
             getDownloadFileUrl(downloadFileId,bgColor).then((data) => {
                 if (data && data.result) {
                     setPhotoUrl(data.result.idPhoto);
-                    saveImageToFile("gen-preview");
+                    saveBase64AsFile(data.result.idPhoto,"photo");
                 }
             });
         }
