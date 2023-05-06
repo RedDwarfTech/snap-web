@@ -79,13 +79,16 @@ export function downloadPhoto(bgColor: string, imgId: string) {
             const green = pixelData[i + 1];
             const blue = pixelData[i + 2];
             const alpha = pixelData[i + 3];
-
-            // 判断当前像素是否为背景颜色
             if (red === 0 && green === 0 && blue === 0 && alpha === 0) {
                 pixelData[i] = r;
                 pixelData[i + 1] = g;
                 pixelData[i + 2] = b;
                 pixelData[i + 3] = 255;
+            }else if(red <160 && green < 160 && blue < 160 && alpha === 0){
+                pixelData[i] = r;
+                pixelData[i + 1] = g;
+                pixelData[i + 2] = b;
+                pixelData[i + 3] = 225;
             }
         }
     }
