@@ -15,6 +15,7 @@ import { IOrder, OrderService, PayService, doPay } from "rd-component";
 import Pay from "@/page/pay/Pay";
 import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
+import { unwatchFile } from "fs";
 
 const { Option } = Select;
 
@@ -31,8 +32,8 @@ const GenPhoto: React.FC = () => {
     const [bgColor, setBgColor] = useState('#438edb');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
     const [isPaying, setIsPaying] = useState<boolean>(false);
-    const [createdOrderInfo, setCreatedOrderInfo] = useState<{formText: string,orderId:string}>();
-    const { createdOrder, order } = useSelector((state: any) => state.rdRootReducer.pay);
+    const [createdOrderInfo, setCreatedOrderInfo] = useState<{ formText: string, orderId: string }>();
+    const { createdOrder } = useSelector((state: any) => state.rdRootReducer.pay);
 
     React.useEffect(() => {
         if (file && Object.keys(file).length > 0) {
@@ -97,16 +98,16 @@ const GenPhoto: React.FC = () => {
     }
 
     const downloadFile = () => {
-        if (!isPaying) {
+        if (!isPaying && !createdOrderInfo) {
             setIsPaying(true);
             handlePrePay();
         }
-        if (createdOrderInfo && createdOrderInfo.orderId != null ) {
+        if (createdOrderInfo && createdOrderInfo.orderId != null) {
             const orderId = createdOrderInfo.orderId;
             if (orderId) {
-                OrderService.getOrderStatus(orderId, store).then((resp:any) => {
-                    if(ResponseHandler.responseSuccess(resp)){
-                        if(Number(resp.result.orderStatus) === 1){
+                OrderService.getOrderStatus(orderId, store).then((resp: any) => {
+                    if (ResponseHandler.responseSuccess(resp)) {
+                        if (Number(resp.result.orderStatus) === 1) {
                             setIsPaying(false);
                             downloadImpl();
                         }
@@ -132,6 +133,8 @@ const GenPhoto: React.FC = () => {
         event.stopPropagation();
         setPhotoUrl('');
         setOriginPhoto('');
+        setIsPaying(false);
+        setCreatedOrderInfo(undefined);
         setGenerated(false);
         if (inputRef && inputRef.current) {
             inputRef.current.value = '';
