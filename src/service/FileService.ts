@@ -29,10 +29,10 @@ export function doUpload(params: any, url: string) {
 }
 
 
-export function getDownloadFileUrl(fid: string) {
+export function getDownloadFileUrl(fid: string,bgColor: string) {
     const config = {
         method: 'get',
-        url: '/snap/photo/download?id=' + Number(fid),
+        url: '/snap/photo/download?id=' + Number(fid) + "&bgColor=" + bgColor ,
     };
     const actionTypeString: string = FileActionType[FileActionType.DOWNLOAD_FILE];
     return requestWithActionType(config, actionTypeString, store);
@@ -123,6 +123,29 @@ export function downloadPhotoLegacy(bgColor: string, imgId: string) {
         // 绘制背景色
         context.fillRect(0, 0, canvas.width, canvas.height);
     }
+    context.putImageData(imageData, 0, 0);
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'image.png';
+    link.click();
+}
+
+export function saveImageToFile(imgId: string) {
+    const element = document.getElementById(imgId) as HTMLImageElement;
+    if (!element) {
+        return;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = element.naturalWidth;
+    canvas.height = element.naturalHeight;
+    const context = canvas.getContext('2d');
+    if (!context) {
+        return;
+    }
+    context.imageSmoothingEnabled = true;
+    context.drawImage(element as HTMLImageElement, 0, 0, canvas.width, canvas.height);
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     context.putImageData(imageData, 0, 0);
     const dataURL = canvas.toDataURL('image/png');
     const link = document.createElement('a');
