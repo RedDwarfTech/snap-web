@@ -99,3 +99,34 @@ export function downloadPhoto(bgColor: string, imgId: string) {
     link.download = 'image.png';
     link.click();
 }
+
+export function downloadPhotoLegacy(bgColor: string, imgId: string) {
+    const element = document.getElementById(imgId) as HTMLImageElement;
+    if (!element) {
+        return;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = element.naturalWidth;
+    canvas.height = element.naturalHeight;
+    const context = canvas.getContext('2d');
+    if (!context) {
+        return;
+    }
+    context.imageSmoothingEnabled = true;
+    context.drawImage(element as HTMLImageElement, 0, 0, canvas.width, canvas.height);
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    if (bgColor !== "origin") {
+         // 设置背景色
+         context.fillStyle = '#ff0000';
+        // 设置绘制模式为覆盖
+        context.globalCompositeOperation = 'destination-over';
+        // 绘制背景色
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    context.putImageData(imageData, 0, 0);
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'image.png';
+    link.click();
+}
