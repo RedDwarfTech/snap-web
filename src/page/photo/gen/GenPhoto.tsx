@@ -118,7 +118,7 @@ const GenPhoto: React.FC = () => {
     }
 
     const downloadImpl = () => {
-        if (downloadFileId) {
+        if (downloadFileId && bgColor) {
             getDownloadFileUrl(downloadFileId,bgColor).then((data) => {
                 if (data && data.result) {
                     setPhotoUrl(data.result.idPhoto);

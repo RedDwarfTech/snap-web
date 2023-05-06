@@ -30,9 +30,10 @@ export function doUpload(params: any, url: string) {
 
 
 export function getDownloadFileUrl(fid: string,bgColor: string) {
+    const params = encodeURIComponent("id=" + Number(fid) + "&bgColor=" + bgColor);
     const config = {
         method: 'get',
-        url: '/snap/photo/download?id=' + Number(fid) + "&bgColor=" + bgColor ,
+        url: '/snap/photo/download?' + params,
     };
     const actionTypeString: string = FileActionType[FileActionType.DOWNLOAD_FILE];
     return requestWithActionType(config, actionTypeString, store);
