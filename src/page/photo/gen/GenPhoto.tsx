@@ -9,10 +9,9 @@ import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
-import FileUploader from "@/component/upload/FileUploader";
 import { RdFile } from "js-wheel";
 import React from "react";
-import { IOrder, PayService, doPay } from "rd-component";
+import { IOrder, OrderService, PayService, doPay } from "rd-component";
 import Pay from "@/page/pay/Pay";
 import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
@@ -33,7 +32,8 @@ const GenPhoto: React.FC = () => {
     const [payForm, setPayForm] = useState<String>('');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
     const [isPayed, setIsPayed] = useState<boolean>(false);
-    const { formText,order } = useSelector((state: any) => state.rdRootReducer.pay);
+    const [createdOrderInfo, setCreatedOrderInfo] = useState<{formText: string,orderId:string}>();
+    const { createdOrder, order } = useSelector((state: any) => state.rdRootReducer.pay);
 
     React.useEffect(() => {
         if (file && Object.keys(file).length > 0) {
@@ -50,10 +50,11 @@ const GenPhoto: React.FC = () => {
     }, [order]);
 
     React.useEffect(() => {
-        if (formText && formText.length > 0) {
-            setPayForm(formText);
+        if (createdOrder && Object.keys(createdOrder).length > 0) {
+            setPayForm(createdOrder.formText);
+            setCreatedOrderInfo(createdOrder);
         }
-    }, [formText]);
+    }, [createdOrder]);
 
     React.useEffect(() => {
         readPhotoType();
@@ -104,11 +105,18 @@ const GenPhoto: React.FC = () => {
     }
 
     const downloadFile = () => {
-        if (!isPayed && !payForm) {
+        if (!payForm) {
             handlePrePay();
-        } 
-        if(isPayed){
-            downloadImpl();
+        }
+        if (createdOrderInfo && createdOrderInfo.orderId != null ) {
+            const orderId = createdOrderInfo.orderId;
+            if (orderId) {
+                OrderService.getOrderStatus(orderId, store).then((data: any) => {
+                    if (isPayed) {
+                        downloadImpl();
+                    }
+                });
+            }
         }
     }
 
@@ -259,7 +267,7 @@ const GenPhoto: React.FC = () => {
                 <div className="snap-preview-area">
                     <div className="snap-upload">
                         <div className="snap-upload-header">上传图片</div>
-                        <div className={originPhoto?"snap-upload-impl":"snap-upload-impl-dash"}>
+                        <div className={originPhoto ? "snap-upload-impl" : "snap-upload-impl-dash"}>
                             {renderOriginPhoto()}
                         </div>
                     </div>
