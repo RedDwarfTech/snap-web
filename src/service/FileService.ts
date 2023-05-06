@@ -28,9 +28,12 @@ export function doUpload(params: any, url: string) {
     return requestWithActionType(config, actionTypeString, store);
 }
 
-
 export function getDownloadFileUrl(fid: string,bgColor: string) {
-    const params = encodeURIComponent("id=" + Number(fid) + "&bgColor=" + bgColor);
+    // https://stackoverflow.com/questions/76190591/how-about-to-use-encodeuricomponent-to-encode-key-and-parameter/76190600
+    const params = new URLSearchParams({
+        id: fid,
+        bgColor
+    });
     const config = {
         method: 'get',
         url: '/snap/photo/download?' + params,
