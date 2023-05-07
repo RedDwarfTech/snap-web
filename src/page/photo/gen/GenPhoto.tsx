@@ -30,6 +30,7 @@ const GenPhoto: React.FC = () => {
     const { file } = useSelector((state: any) => state.rdRootReducer.file)
     const [bgColor, setBgColor] = useState('#438edb');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
+    const [formText, setFormText] = useState<string>('');
     const [isPaying, setIsPaying] = useState<boolean>(false);
     const [createdOrderInfo, setCreatedOrderInfo] = useState<{ formText: string, orderId: string }>();
     const { createdOrder } = useSelector((state: any) => state.rdRootReducer.pay);
@@ -45,6 +46,7 @@ const GenPhoto: React.FC = () => {
     React.useEffect(() => {
         if (createdOrder && Object.keys(createdOrder).length > 0) {
             setCreatedOrderInfo(createdOrder);
+            setFormText(createdOrder.formText);
         }
     }, [createdOrder]);
 
@@ -258,6 +260,11 @@ const GenPhoto: React.FC = () => {
         }
     }
 
+    const payComplete = () => {
+        console.log("complete");
+        setFormText('');
+    }
+
     return (
         <div className="snap-container">
             <div className="snap-oper">
@@ -292,8 +299,9 @@ const GenPhoto: React.FC = () => {
                         <button onClick={reuploadFile}>重新上传</button>
                         {renderUploadImage()}
                     </div>
-                    <Pay payFormText={createdOrderInfo ? createdOrderInfo.formText : ""}
+                    <Pay payFormText={formText}
                         price="2.00"
+                        onPayComplete={payComplete}
                         payProvider="支付宝"></Pay>
                 </div>
             </div>
