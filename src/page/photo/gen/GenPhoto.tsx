@@ -12,7 +12,7 @@ import withConnect from "@/component/hoc/withConnect";
 import { RdFile, ResponseHandler } from "js-wheel";
 import React from "react";
 import { IOrder, OrderService, PayService, doPay } from "rd-component";
-import Pay from "@/page/pay/Pay";
+import { Pay } from "rd-component";
 import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
 
@@ -118,9 +118,9 @@ const GenPhoto: React.FC = () => {
 
     const downloadImpl = () => {
         if (downloadFileId && bgColor) {
-            getDownloadFileUrl(downloadFileId,bgColor).then((data) => {
+            getDownloadFileUrl(downloadFileId, bgColor).then((data) => {
                 if (data && data.result) {
-                    saveBase64AsFile(data.result.idPhoto,"photo");
+                    saveBase64AsFile(data.result.idPhoto, "photo");
                 }
             });
         }
@@ -292,7 +292,9 @@ const GenPhoto: React.FC = () => {
                         <button onClick={reuploadFile}>重新上传</button>
                         {renderUploadImage()}
                     </div>
-                    <Pay></Pay>
+                    <Pay payFormText={createdOrderInfo ? createdOrderInfo.formText : ""}
+                        price="2.00"
+                        payProvider="支付宝"></Pay>
                 </div>
             </div>
         </div>
