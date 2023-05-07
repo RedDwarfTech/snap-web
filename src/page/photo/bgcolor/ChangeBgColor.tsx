@@ -132,21 +132,7 @@ const ChangeBgColor: React.FC = (props: any) => {
                 </div>
                 {renderDownloadedImage()}
             </div>
-            <Pay></Pay>
-            <div id="pay-mask" className="pay-mask"></div>
-            <div id="pay-popup" className="popup">
-                <div className="pay-container" id="main">
-                    <div className="pay-money">支付金额&nbsp;&nbsp;<span id="pay_price">2.00元</span></div>
-                    <div>
-                        <div className="pay-img">
-                            <img id="pay_qrcode" src="https://a9h.cn/addons/zzzy_idcard_pc/core/web/uploads/20230501/644f748c133cd.png" alt="" />
-                        </div>
-                    </div>
-                    <p className="pay-paragraph">
-                        <img className="pay-scan" src="/addons/zzzy_idcard_pc/core/web/statics/images/site/icon-wechat.png" alt="" />微信扫码支付
-                    </p>
-                </div>
-            </div>
+            <Pay></Pay>         
         </div>
     );
 }

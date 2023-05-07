@@ -15,6 +15,8 @@ import { IOrder, OrderService, PayService, doPay } from "rd-component";
 import { Pay } from "rd-component";
 import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
+import { readConfig } from "@/config/app/config-reader";
+import "./Pay.css";
 
 const { Option } = Select;
 
@@ -94,6 +96,11 @@ const GenPhoto: React.FC = () => {
             const order: IOrder = {
                 id: downloadFileId
             };
+            setCreatedOrderInfo({
+                formText: readConfig("testFormText"),
+                orderId: "1"
+            });
+            setFormText(readConfig("testFormText"));
             PayService.setPayedInfo(order, store);
         }
     }
@@ -261,8 +268,22 @@ const GenPhoto: React.FC = () => {
     }
 
     const payComplete = () => {
-        console.log("complete");
-        setFormText('');
+        if(!createdOrderInfo || !createdOrderInfo.orderId){
+            message.error("未找到订单信息");
+            return;
+        }
+        const orderId = createdOrderInfo.orderId;
+        OrderService.getOrderStatus(orderId, store).then((resp: any) => {
+            if (ResponseHandler.responseSuccess(resp)) {
+                if (Number(resp.result.orderStatus) === 1) {
+                    setFormText('');
+                }else{
+                    message.warning("检测到订单当前未支付，请稍后再次确认");
+                }
+            }else{
+                message.warning("订单检测失败");
+            }
+        });
     }
 
     return (
