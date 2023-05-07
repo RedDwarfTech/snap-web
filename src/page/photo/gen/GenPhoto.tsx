@@ -1,7 +1,7 @@
 import "./GenPhoto.css";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useRef, useState } from "react";
-import { clearPhoto, doUpload, downloadPhoto, downloadPhotoLegacy, getDownloadFileUrl, saveBase64AsFile, saveImageToFile } from "@/service/FileService";
+import { clearPhoto, doUpload, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
 import { IUploadedFile } from "@/models/UploadedFile";
 import store from "@/redux/store/store";
 import { ICropParams } from "@/models/request/photo/CropParams";
@@ -9,13 +9,12 @@ import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
-import { REST, RdFile, ResponseHandler } from "js-wheel";
+import { RdFile, ResponseHandler } from "js-wheel";
 import React from "react";
 import { IOrder, OrderService, PayService, doPay } from "rd-component";
 import Pay from "@/page/pay/Pay";
 import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
-import { unwatchFile } from "fs";
 
 const { Option } = Select;
 
