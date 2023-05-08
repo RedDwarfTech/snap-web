@@ -34,7 +34,7 @@
   },
   "scripts": {
     "start": "export PORT=3001 && export NODE_ENV=development && export FAST_REFRESH=false && craco start",
-    "build": "craco build",
+    "build": "export NODE_ENV=development && export FAST_REFRESH=false && craco build",
     "test": "craco test",
     "eject": "craco eject"
   },
