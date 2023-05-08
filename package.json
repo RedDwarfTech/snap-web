@@ -18,14 +18,13 @@
     "customize-cra": "^1.0.0",
     "js-wheel": "https://github.com/jiangxiaoqiang/js-wheel.git",
     "query-string": "^8.1.0",
-    "rd-component": "^0.1.42",
+    "rd-component": "^0.1.46",
     "rdjs-wheel": "0.0.1",
     "react": "^18.2.0",
-    "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
+    "react-refresh": "^0.14.0",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
@@ -34,10 +33,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "export PORT=3001 && react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-app-rewired eject"
+    "start": "export PORT=3001 && export NODE_ENV=development && export FAST_REFRESH=false && craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +57,10 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@types/uuid": "^9.0.1"
+  },
+  "overrides": {
+    "react-refresh": "0.11.0"
   }
 }

@@ -16,7 +16,7 @@ import { Pay } from "rd-component";
 import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
 import { readConfig } from "@/config/app/config-reader";
-import "./Pay.css";
+import 'rd-component/dist/style.css';
 
 const { Option } = Select;
 
