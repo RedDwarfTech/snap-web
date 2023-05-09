@@ -35,9 +35,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "export NODE_ENV=production && vite",
     "start": "export PORT=3001 && export NODE_ENV=production && export FAST_REFRESH=false && craco start",
-    "build": "tsc && vite build",
+    "build": "export NODE_ENV=production && tsc && vite build",
     "test": "craco test",
     "eject": "craco eject"
   },
