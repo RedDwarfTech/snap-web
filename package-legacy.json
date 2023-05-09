@@ -2,7 +2,6 @@
   "name": "snap-web",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@reduxjs/toolkit": "^1.9.3",
@@ -31,13 +30,11 @@
     "redux-thunk": "^2.4.2",
     "typescript": "^4.9.5",
     "uuid": "^9.0.0",
-    "vite": "^4.3.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "vite",
     "start": "export PORT=3001 && export NODE_ENV=production && export FAST_REFRESH=false && craco start",
-    "build": "tsc && vite build",
+    "build": "export NODE_ENV=development && export FAST_REFRESH=false && craco build",
     "test": "craco test",
     "eject": "craco eject"
   },

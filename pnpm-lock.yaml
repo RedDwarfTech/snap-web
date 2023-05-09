@@ -82,6 +82,9 @@ dependencies:
   uuid:
     specifier: ^9.0.0
     version: 9.0.0
+  vite:
+    specifier: ^4.3.5
+    version: 4.3.5(@types/node@16.18.23)
   web-vitals:
     specifier: ^2.1.4
     version: 2.1.4
