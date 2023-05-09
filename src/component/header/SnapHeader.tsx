@@ -32,25 +32,12 @@ const SnapHeader: React.FC<HeaderFormProps> = (props) => {
   };
 
   const userLogin = () => {
-    if (process.env.NODE_ENV === 'production') {
-      let param = {
-        appId: readConfig("appId")
-      };
-      userLoginImpl(param).then((data: any) => {
-        window.location.href = data.result;
-      });
-    } else {
-      let param = {
-        appId: readConfig("appId"),
-        phone: readConfig("phone"),
-        password: readConfig("password"),
-        loginType: 1,
-        deviceId: 1,
-        deviceName: readConfig("deviceName"),
-        deviceType: 4
-      };
-      userLoginByPhoneImpl(param);
-    }
+    let param = {
+      appId: readConfig("appId")
+    };
+    userLoginImpl(param).then((data: any) => {
+      window.location.href = data.result;
+    });
   }
 
   const showUserProfile = () => {

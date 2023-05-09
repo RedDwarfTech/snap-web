@@ -87,22 +87,10 @@ const GenPhoto: React.FC = () => {
     }
 
     const handlePrePay = () => {
-        if (process.env.NODE_ENV === 'production') {
-            let payReq = {
-                productId: 21
-            };
-            doPay(payReq, store);
-        } else {
-            const order: IOrder = {
-                id: downloadFileId
-            };
-            setCreatedOrderInfo({
-                formText: readConfig("testFormText"),
-                orderId: "1"
-            });
-            setFormText(readConfig("testFormText"));
-            PayService.setPayedInfo(order, store);
-        }
+        let payReq = {
+            productId: 21
+        };
+        doPay(payReq, store);
     }
 
     const downloadFile = () => {
