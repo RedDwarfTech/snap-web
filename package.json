@@ -37,7 +37,7 @@
   "scripts": {
     "dev": "export NODE_ENV=production && vite",
     "start": "export PORT=3001 && export NODE_ENV=production && export FAST_REFRESH=false && craco start",
-    "build": " tsc && export NODE_ENV=production && vite build",
+    "build": " tsc && export NODE_ENV=development && vite build",
     "test": "craco test",
     "eject": "craco eject"
   },
