@@ -28,6 +28,7 @@ const GenPhoto: React.FC = () => {
     const [photoType, setPhotoType] = useState<String[]>([]);
     const { file } = useSelector((state: any) => state.rdRootReducer.file)
     const [bgColor, setBgColor] = useState('#438edb');
+    const [bgColorName, setBgColorName] = useState('red');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
     const [formText, setFormText] = useState<string>('');
     const [isPaying, setIsPaying] = useState<boolean>(false);
@@ -202,9 +203,11 @@ const GenPhoto: React.FC = () => {
         switch (event) {
             case 'red':
                 setBgColor('#FF0000');
+                setBgColorName("red");
                 break;
             case 'blue':
                 setBgColor('#438edb');
+                setBgColorName("light-blue");
                 break;
             default:
                 message.warning("不支持的背景颜色");
@@ -295,8 +298,12 @@ const GenPhoto: React.FC = () => {
                         <div className="photo-bg">
                             <span>背景色：</span>
                             <div className="photo-bg-choice">
-                                <div className="photo-bg-red" onClick={() => bgColorClick('red')}></div>
-                                <div className="photo-bg-blue" onClick={() => bgColorClick('blue')}></div>
+                                <div className={bgColorName == "red"?"photo-bg-marker-selected":"photo-bg-marker"}>
+                                    <div className="photo-bg-red" onClick={() => bgColorClick('red')}></div>
+                                </div>
+                                <div className={bgColorName == "light-blue"?"photo-bg-marker-selected":"photo-bg-marker"}>
+                                    <div className="photo-bg-blue" onClick={() => bgColorClick('blue')}></div>
+                                </div>
                             </div>
                         </div>
                     </div>
