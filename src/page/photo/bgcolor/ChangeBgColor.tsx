@@ -5,13 +5,13 @@ import FileUploader from "@/component/upload/FileUploader";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { downloadPhoto, uploadBackgroundImage } from "@/service/FileService";
 import { Button, message } from "antd";
-import { RdColor, RdFile } from "rdjs-wheel";
+import { RdFile } from "rdjs-wheel";
 import { useSelector } from "react-redux";
 import React from "react";
-import { PhotoResponse } from "@/models/photo/PhotoResponse";
 import { doPay } from "rd-component";
 import store from "@/redux/store/store";
 import Pay from "@/page/pay/Pay";
+import { PhotoResponse } from "@/models/photo/PhotoResponse";
 
 const ChangeBgColor: React.FC = (props: any) => {
 

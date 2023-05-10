@@ -11,7 +11,7 @@ export type FileUploaderProps = {
 const FileUploader: React.FC<FileUploaderProps> = (props: FileUploaderProps) => {
 
     const inputRef = useRef<HTMLInputElement>(null);
-    const [photoUrl, setPhotoUrl] = useState<File | null>();
+    const [_, setPhotoUrl] = useState<File | null>();
 
     const handleFileChange = (event: any) => {
         const file = event.target.files[0];

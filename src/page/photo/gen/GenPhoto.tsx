@@ -2,21 +2,19 @@ import "./GenPhoto.css";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useRef, useState } from "react";
 import { clearPhoto, doUpload, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
-import { IUploadedFile } from "@/models/UploadedFile";
 import store from "@/redux/store/store";
-import { ICropParams } from "@/models/request/photo/CropParams";
 import { Select, Space, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
-import { RdFile, ResponseHandler } from "js-wheel";
+import { RdFile, ResponseHandler } from "rdjs-wheel";
 import React from "react";
-import { IOrder, OrderService, PayService, doPay } from "rd-component";
+import { OrderService, doPay } from "rd-component";
 import { Pay } from "rd-component";
 import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
-import { readConfig } from "@/config/app/config-reader";
 import 'rd-component/dist/style.css';
+import { ICropParams } from "@/models/request/photo/CropParams";
 
 const { Option } = Select;
 
@@ -26,7 +24,6 @@ const GenPhoto: React.FC = () => {
     const [originPhoto, setOriginPhoto] = useState<String>();
     const [generated, setGenerated] = useState<boolean>(false);
     const [photoSize, setPhotoSize] = useState<string>();
-    const [uploadedFile, setUploadedFile] = useState<IUploadedFile | null>();
     const inputRef = useRef<HTMLInputElement>(null);
     const [photoType, setPhotoType] = useState<String[]>([]);
     const { file } = useSelector((state: any) => state.rdRootReducer.file)
@@ -134,7 +131,6 @@ const GenPhoto: React.FC = () => {
         if (inputRef && inputRef.current) {
             inputRef.current.value = '';
             clearPhotho();
-            setUploadedFile(null);
         }
     }
 

@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import "./Goods.css"
 import { useState } from "react";
-import BaseMethods from "js-wheel/dist/src/utils/data/BaseMethods";
+import BaseMethods from "rdjs-wheel/dist/src/utils/data/BaseMethods";
 import { Divider } from "antd";
 import React from "react";
 import { v4 as uuid } from 'uuid';
 import withConnect from "@/component/hoc/withConnect";
-import { IapProduct, PayService, doGetIapProduct, doPay } from "rd-component";
+import { IapProduct, doGetIapProduct } from "rd-component";
 import store from "@/redux/store/store";
 import Pay from "../pay/Pay";
 
@@ -14,7 +14,7 @@ const Goods: React.FC = () => {
 
   const { iapproducts } = useSelector((state: any) => state.rdRootReducer.iapproduct);
   const { formText } = useSelector((state: any) => state.rdRootReducer.pay);
-  const [payFrame, setPayFrame] = useState('');
+  const [_, setPayFrame] = useState<string>('');
   const [products, setProducts] = useState<IapProduct[]>([]);
 
   React.useEffect(() => {

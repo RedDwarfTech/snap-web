@@ -1,12 +1,12 @@
 import { Avatar, Button } from "antd";
 import React, { useState } from "react";
 import "./SnapHeader.css"
-import { doLoginOut, getCurrentUser, userLoginByPhoneImpl, userLoginImpl } from "@/service/user/UserService";
-import { AuthHandler, IUserModel, WheelGlobal } from "rdjs-wheel";
+import { doLoginOut, getCurrentUser, userLoginImpl } from "@/service/user/UserService";
+import { AuthHandler, IUserModel } from "rdjs-wheel";
 import { readConfig } from "@/config/app/config-reader";
-import { ControlOutlined, LogoutOutlined, PayCircleOutlined } from "@ant-design/icons";
-import withConnect from "../hoc/withConnect";
+import { LogoutOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import withConnect from "../hoc/withConnect";
 
 export type HeaderFormProps = {
   onMenuClick: (menu: String) => void;
@@ -16,7 +16,7 @@ const SnapHeader: React.FC<HeaderFormProps> = (props) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') || false);
   const [isGetUserLoading, setIsGetUserLoading] = useState(false);
-  const [userInfo, setUserInfo] = useState<IUserModel>();
+  const [_, setUserInfo] = useState<IUserModel>();
   const { loginUser } = useSelector((state: any) => state.rdRootReducer.user)
 
   React.useEffect(() => {
@@ -38,10 +38,6 @@ const SnapHeader: React.FC<HeaderFormProps> = (props) => {
     userLoginImpl(param).then((data: any) => {
       window.location.href = data.result;
     });
-  }
-
-  const showUserProfile = () => {
-    handleMenuClick('profile');
   }
 
   const avatarClick = () => {

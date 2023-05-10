@@ -3,8 +3,6 @@ import "./PaySuccess.css"
 import queryString from 'query-string';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
-import { IOrder, PayService } from "rd-component";
-import store from "@/redux/store/store";
 import withConnect from "@/component/hoc/withConnect";
 
 const PaySuccess: React.FC = () => {

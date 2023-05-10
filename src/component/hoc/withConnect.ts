@@ -1,14 +1,13 @@
 import { connect } from 'react-redux';
-import { AppState } from '@/redux/types/AppState';
 
-const mapStateToProps = (state: AppState) => ({
-  file: state.file,
+const mapStateToProps = () => ({
+  
 });
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = () => ({
 
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
-export default withConnect; 
+export default withConnect;

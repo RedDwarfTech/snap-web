@@ -1,4 +1,3 @@
-
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../reducer/combineReducer';
 import { createLogger } from 'redux-logger';
@@ -15,6 +14,3 @@ const store = configureStore({
 });
 
 export default store;
-
-
-

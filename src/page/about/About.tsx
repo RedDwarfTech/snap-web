@@ -1,10 +1,7 @@
-import { Typography } from "antd";
 import React from "react";
 import "./About.css"
-const { Paragraph} = Typography;
 
-
-const About: React.FC = (props) => {
+const About: React.FC = () => {
   return (
     <div className="about-container">
       <div className="about-intro">

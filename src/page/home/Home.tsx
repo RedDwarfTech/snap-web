@@ -1,13 +1,13 @@
-import withConnect from "@/component/hoc/withConnect";
 import "./Home.css";
 import SnapHeader from "@/component/header/SnapHeader";
-import About from "../about/About";
 import GenPhoto from "../photo/gen/GenPhoto";
 import { useState } from "react";
 import ChangeBgColor from "../photo/bgcolor/ChangeBgColor";
 import Goods from "../goods/Goods";
+import withConnect from "@/component/hoc/withConnect";
+import About from "../about/About";
 
-const Home: React.FC = (props: any) => {
+const Home: React.FC = () => {
 
     const [currentMenu, setCurrentMenu] = useState<String>('photo');
 
