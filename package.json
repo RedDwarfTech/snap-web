@@ -19,7 +19,7 @@
     "customize-cra": "^1.0.0",
     "js-wheel": "github:jiangxiaoqiang/js-wheel",
     "query-string": "^8.1.0",
-    "rd-component": "^0.1.51",
+    "rd-component": "^0.1.52",
     "rdjs-wheel": "0.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
