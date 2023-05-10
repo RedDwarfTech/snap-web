@@ -14,10 +14,10 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             if(id.includes("antd")){
               return "antd-vendor";
-            }else if(id.includes("react-dom")){
-              return "react-dom-vendor";
-            }else if(id.includes("react-router-dom")){
-              return "react-router-dom-vendor";
+            }else if(id.includes("react")){
+              // react与react-dom不能拆分成多个js
+              // https://stackoverflow.com/questions/34259664/uncaught-typeerror-cannot-read-property-secret-dom-do-not-use-or-you-will-be
+              return "react-vendor";
             }else if(id.includes("redux")){
               return "redux-vendor";
             }
