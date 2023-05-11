@@ -28,7 +28,6 @@ const GenPhoto: React.FC = () => {
     const [photoType, setPhotoType] = useState<String[]>([]);
     const { file } = useSelector((state: any) => state.rdRootReducer.file)
     const [bgColor, setBgColor] = useState('#438edb');
-    const [bgColorName, setBgColorName] = useState('red');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
     const [formText, setFormText] = useState<string>('');
     const [isPaying, setIsPaying] = useState<boolean>(false);
@@ -199,20 +198,8 @@ const GenPhoto: React.FC = () => {
         setPhotoSize(e);
     }
 
-    const bgColorClick = (event: any) => {
-        switch (event) {
-            case 'red':
-                setBgColor('#FF0000');
-                setBgColorName("red");
-                break;
-            case 'blue':
-                setBgColor('#438edb');
-                setBgColorName("light-blue");
-                break;
-            default:
-                message.warning("不支持的背景颜色");
-                break;
-        }
+    const bgColorClick = (color: string) => {
+        setBgColor(color);
     }
 
     const handleFileChange = (event: any) => {
@@ -255,7 +242,7 @@ const GenPhoto: React.FC = () => {
     }
 
     const payComplete = () => {
-        if(!createdOrderInfo || !createdOrderInfo.orderId){
+        if (!createdOrderInfo || !createdOrderInfo.orderId) {
             message.error("未找到订单信息");
             return;
         }
@@ -264,13 +251,47 @@ const GenPhoto: React.FC = () => {
             if (ResponseHandler.responseSuccess(resp)) {
                 if (Number(resp.result.orderStatus) === 1) {
                     setFormText('');
-                }else{
+                } else {
                     message.warning("检测到订单当前未支付，请稍后再次确认");
                 }
-            }else{
+            } else {
                 message.warning("订单检测失败");
             }
         });
+    }
+
+    const bgColors = [
+        "#FFFFFF",
+        "#FF0000",
+        "#438edb",
+        "#2254F4",
+        "#C80002"
+    ];
+
+    const compareColor = (hexColor1: string, hexColor2: string): boolean => {
+        const parseHex = (hex: string): [number, number, number] => {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return [r, g, b];
+        }
+
+        const [r1, g1, b1] = parseHex(hexColor1);
+        const [r2, g2, b2] = parseHex(hexColor2);
+
+        return (r1 === r2 && g1 === g2 && b1 === b2);
+    }
+
+    const renderBgElement = () => {
+        const bgColorList: JSX.Element[] = [];
+        bgColors.forEach((item) => {
+            let selected = compareColor(item,bgColor);
+            bgColorList.push(
+            <div className={selected ? "photo-bg-marker-selected" : "photo-bg-marker"}>
+                <div className="photo-bg-element" style={{backgroundColor:item}} onClick={() => bgColorClick(item)}></div>
+            </div>);
+        });
+        return bgColorList;
     }
 
     return (
@@ -298,12 +319,7 @@ const GenPhoto: React.FC = () => {
                         <div className="photo-bg">
                             <span>背景色：</span>
                             <div className="photo-bg-choice">
-                                <div className={bgColorName == "red"?"photo-bg-marker-selected":"photo-bg-marker"}>
-                                    <div className="photo-bg-red" onClick={() => bgColorClick('red')}></div>
-                                </div>
-                                <div className={bgColorName == "light-blue"?"photo-bg-marker-selected":"photo-bg-marker"}>
-                                    <div className="photo-bg-blue" onClick={() => bgColorClick('blue')}></div>
-                                </div>
+                                {renderBgElement()}
                             </div>
                         </div>
                     </div>

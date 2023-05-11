@@ -46,6 +46,7 @@
     background-color: white;
     padding: 25px;
     margin-right: 40px;
+    border-radius: 10px;
 }
 
 .snap-upload-impl {
@@ -111,6 +112,7 @@
     min-height: 400px;
     background-color: white;
     padding: 25px;
+    border-radius: 10px;
 }
 
 .snap-preview-header {
@@ -167,11 +169,10 @@ input[type="file"]::before {
     width: 30px;
 }
 
-.photo-bg-red {
+.photo-bg-element {
     width: 30px;
     height: 30px;
     border-radius: 6px;
-    background-color: red;
 }
 
 .photo-bg-blue {
