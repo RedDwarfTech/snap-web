@@ -8,7 +8,6 @@ import { v4 as uuid } from 'uuid';
 import withConnect from "@/component/hoc/withConnect";
 import { IapProduct, doGetIapProduct } from "rd-component";
 import store from "@/redux/store/store";
-import Pay from "../pay/Pay";
 
 const Goods: React.FC = () => {
 
@@ -73,7 +72,6 @@ const Goods: React.FC = () => {
         {productSubMenu(products)}
       </div>
       <Divider></Divider>
-      <Pay></Pay>
     </div>
   );
 }
