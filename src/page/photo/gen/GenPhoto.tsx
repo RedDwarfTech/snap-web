@@ -3,7 +3,7 @@ import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useRef, useState } from "react";
 import { clearPhoto, doUpload, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
 import store from "@/redux/store/store";
-import { Select, Space, message } from "antd";
+import { Alert, Modal, Select, Space, Spin, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
@@ -33,12 +33,14 @@ const GenPhoto: React.FC = () => {
     const [isPaying, setIsPaying] = useState<boolean>(false);
     const [createdOrderInfo, setCreatedOrderInfo] = useState<{ formText: string, orderId: string }>();
     const { createdOrder } = useSelector((state: any) => state.rdRootReducer.pay);
+    const [loading, setLoading] = useState(false);
 
     React.useEffect(() => {
         if (file && Object.keys(file).length > 0) {
             setPhotoUrl(file.markedPhoto);
             setGenerated(true);
             setDownloadFileId(file.fileId);
+            setLoading(false);
         }
     }, [file]);
 
@@ -166,6 +168,7 @@ const GenPhoto: React.FC = () => {
                 height: parseInt(height.toString())
             };
             doUpload(cropParams, '/snap/photo/id/gen');
+            setLoading(true);
         }
     }
 
@@ -275,21 +278,19 @@ const GenPhoto: React.FC = () => {
             const b = parseInt(hex.slice(5, 7), 16);
             return [r, g, b];
         }
-
         const [r1, g1, b1] = parseHex(hexColor1);
         const [r2, g2, b2] = parseHex(hexColor2);
-
         return (r1 === r2 && g1 === g2 && b1 === b2);
     }
 
     const renderBgElement = () => {
         const bgColorList: JSX.Element[] = [];
         bgColors.forEach((item) => {
-            let selected = compareColor(item,bgColor);
+            let selected = compareColor(item, bgColor);
             bgColorList.push(
-            <div className={selected ? "photo-bg-marker-selected" : "photo-bg-marker"}>
-                <div className="photo-bg-element" style={{backgroundColor:item}} onClick={() => bgColorClick(item)}></div>
-            </div>);
+                <div className={selected ? "photo-bg-marker-selected" : "photo-bg-marker"}>
+                    <div className="photo-bg-element" style={{ backgroundColor: item }} onClick={() => bgColorClick(item)}></div>
+                </div>);
         });
         return bgColorList;
     }
@@ -327,6 +328,15 @@ const GenPhoto: React.FC = () => {
                         <button onClick={reuploadFile}>重新上传</button>
                         {renderUploadImage()}
                     </div>
+                    <Modal open={loading} footer={null} closable={false}>
+                        <Spin tip="生成中..." size="large">
+                            <Alert
+                                message="生成证件照需要3-10s左右，请稍等..."
+                                description="生成证件照过程中遇到问题？可联系客服QQ：479175365"
+                                type="info"
+                            />
+                        </Spin>
+                    </Modal>
                     <Pay payFormText={formText}
                         price="2.00"
                         onPayComplete={payComplete}
