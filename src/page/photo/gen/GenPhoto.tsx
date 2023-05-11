@@ -288,7 +288,7 @@ const GenPhoto: React.FC = () => {
         bgColors.forEach((item) => {
             let selected = compareColor(item, bgColor);
             bgColorList.push(
-                <div className={selected ? "photo-bg-marker-selected" : "photo-bg-marker"}>
+                <div key={uuid()} className={selected ? "photo-bg-marker-selected" : "photo-bg-marker"}>
                     <div className="photo-bg-element" style={{ backgroundColor: item }} onClick={() => bgColorClick(item)}></div>
                 </div>);
         });

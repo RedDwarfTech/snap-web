@@ -11,7 +11,6 @@ import React from "react";
 import { OrderService, Pay, doPay } from "rd-component";
 import store from "@/redux/store/store";
 import { PhotoResponse } from "@/models/photo/PhotoResponse";
-const [createdOrderInfo, setCreatedOrderInfo] = useState<{ formText: string, orderId: string }>();
 
 const ChangeBgColor: React.FC = (props: any) => {
 
@@ -24,6 +23,7 @@ const ChangeBgColor: React.FC = (props: any) => {
     const { order } = useSelector((state: any) => state.rdRootReducer.pay);
     const { createdOrder } = useSelector((state: any) => state.rdRootReducer.pay);
     const [formText, setFormText] = useState<string>('');
+    const [createdOrderInfo, setCreatedOrderInfo] = useState<{ formText: string, orderId: string }>();
 
     React.useEffect(() => {
         if (photo && Object.keys(photo).length > 0) {
