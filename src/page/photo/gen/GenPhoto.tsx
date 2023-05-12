@@ -15,6 +15,8 @@ import uploadIcon from "@/resource/image/idmaker/upload_icon.png";
 import { UserService } from "rd-component";
 import 'rd-component/dist/style.css';
 import { ICropParams } from "@/models/request/photo/CropParams";
+import { bgColors } from "@/config/app/app-config";
+import ColorUtil from "@/utils/ColorUtil";
 
 const { Option } = Select;
 
@@ -263,30 +265,10 @@ const GenPhoto: React.FC = () => {
         });
     }
 
-    const bgColors = [
-        "#FFFFFF",
-        "#FF0000",
-        "#438edb",
-        "#2254F4",
-        "#C80002"
-    ];
-
-    const compareColor = (hexColor1: string, hexColor2: string): boolean => {
-        const parseHex = (hex: string): [number, number, number] => {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return [r, g, b];
-        }
-        const [r1, g1, b1] = parseHex(hexColor1);
-        const [r2, g2, b2] = parseHex(hexColor2);
-        return (r1 === r2 && g1 === g2 && b1 === b2);
-    }
-
     const renderBgElement = () => {
         const bgColorList: JSX.Element[] = [];
         bgColors.forEach((item) => {
-            let selected = compareColor(item, bgColor);
+            let selected = ColorUtil.compareColor(item, bgColor);
             bgColorList.push(
                 <div key={uuid()} className={selected ? "photo-bg-marker-selected" : "photo-bg-marker"}>
                     <div className="photo-bg-element" style={{ backgroundColor: item }} onClick={() => bgColorClick(item)}></div>

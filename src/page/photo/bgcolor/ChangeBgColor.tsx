@@ -8,9 +8,12 @@ import { Button, message } from "antd";
 import { RdFile, ResponseHandler } from "rdjs-wheel";
 import { useSelector } from "react-redux";
 import React from "react";
+import { v4 as uuid } from 'uuid';
 import { OrderService, Pay, doPay } from "rd-component";
 import store from "@/redux/store/store";
 import { PhotoResponse } from "@/models/photo/PhotoResponse";
+import ColorUtil from "@/utils/ColorUtil";
+import { bgColors } from "@/config/app/app-config";
 
 const ChangeBgColor: React.FC = (props: any) => {
 
@@ -64,19 +67,8 @@ const ChangeBgColor: React.FC = (props: any) => {
             });
         }
     }
-
-    const bgColorClick = (event: any) => {
-        switch (event) {
-            case 'red':
-                setBgColor('#FF0000');
-                break;
-            case 'blue':
-                setBgColor('#0000FF');
-                break;
-            default:
-                message.warning("不支持的背景颜色");
-                break;
-        }
+    const bgColorClick = (color: string) => {
+        setBgColor(color);
     }
 
     const renderPreview = () => {
@@ -142,6 +134,18 @@ const ChangeBgColor: React.FC = (props: any) => {
         );
     }
 
+    const renderBgElement = () => {
+        const bgColorList: JSX.Element[] = [];
+        bgColors.forEach((item:string) => {
+            let selected = ColorUtil.compareColor(item, bgColor);
+            bgColorList.push(
+                <div key={uuid()} className={selected ? "photo-bg-marker-selected" : "photo-bg-marker"}>
+                    <div className="photo-bg-element" style={{ backgroundColor: item }} onClick={() => bgColorClick(item)}></div>
+                </div>);
+        });
+        return bgColorList;
+    }
+
     return (
         <div className="bgchange-container">
             <h2>证件照换底色</h2>
@@ -153,8 +157,7 @@ const ChangeBgColor: React.FC = (props: any) => {
                 <div className="photo-bg">
                     <span>底色：</span>
                     <div className="photo-bg-choice">
-                        <div className="photo-bg-red" onClick={() => bgColorClick('red')}></div>
-                        <div className="photo-bg-blue" onClick={() => bgColorClick('blue')}></div>
+                        {renderBgElement()}
                     </div>
                 </div>
                 {renderDownloadedImage()}
