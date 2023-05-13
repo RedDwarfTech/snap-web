@@ -118,7 +118,7 @@ const GenPhoto: React.FC = () => {
         if (downloadFileId && bgColor) {
             getDownloadFileUrl(downloadFileId, bgColor).then((data) => {
                 if (data && data.result) {
-                    saveBase64AsFile(data.result.idPhoto, "photo");
+                    saveBase64AsFile(data.result.idPhoto, "证件照-" + Date.now().toString());
                 }
             });
         }
