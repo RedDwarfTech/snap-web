@@ -199,8 +199,8 @@ const GenPhoto: React.FC = () => {
         if (originPhoto) {
             const cropParams: ICropParams = {
                 base64Image: originPhoto,
-                width: parseInt(width.toString()),
-                height: parseInt(height.toString())
+                width: parseInt(Math.floor(width).toString()),
+                height: parseInt(Math.floor(height).toString())
             };
             doUpload(cropParams, '/snap/photo/id/gen');
             setLoading(true);
@@ -318,8 +318,8 @@ const GenPhoto: React.FC = () => {
         if (generated) {
             return (
                 <Row style={{ marginBottom: '0px' }} justify="space-around" align="middle">
-                    <Col style={{ textAlign: 'right' }} span={6}>下载类型：</Col>
-                    <Col span={18}>
+                    <Col style={{ textAlign: 'right' }} span={8}><span>下载类型：</span></Col>
+                    <Col span={16}>
                         <Checkbox onClick={() => setDownloadType(0)} checked={downloadType === 0 ? true : false} >证件照</Checkbox>
                         <Checkbox onClick={() => setDownloadType(1)} checked={downloadType === 1 ? true : false}>证件照 + 排版照</Checkbox>
                     </Col>
@@ -332,8 +332,8 @@ const GenPhoto: React.FC = () => {
         if (downloadType === 1) {
             return (
                 <Row style={{ marginBottom: '0px' }} justify="space-around" align="middle">
-                    <Col style={{ textAlign: 'right' }} span={6}>相纸尺寸：</Col>
-                    <Col span={18}>
+                    <Col style={{ textAlign: 'right' }} span={8}><span>相纸尺寸：</span></Col>
+                    <Col span={16}>
                         <Select
                             onChange={handlePrintPhotoSelectChange}
                             placeholder="请选择相纸尺寸"
