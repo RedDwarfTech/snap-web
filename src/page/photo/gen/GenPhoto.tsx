@@ -142,8 +142,8 @@ const GenPhoto: React.FC = () => {
                 const params = new URLSearchParams({
                     bgColor: bgColor,
                     fileId: downloadFileId,
-                    printWidth: printWidth.toString(),
-                    printHeight: printHeight.toString()
+                    printWidth: parseInt(printWidth.toString()).toString(),
+                    printHeight: parseInt(printHeight.toString()).toString()
                 });
                 downloadZipFile(params).then((response: any) => {
                     const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -199,8 +199,8 @@ const GenPhoto: React.FC = () => {
         if (originPhoto) {
             const cropParams: ICropParams = {
                 base64Image: originPhoto,
-                width: parseInt(Math.floor(width).toString()),
-                height: parseInt(Math.floor(height).toString())
+                width: parseInt(width.toString()),
+                height: parseInt(height.toString())
             };
             doUpload(cropParams, '/snap/photo/id/gen');
             setLoading(true);
