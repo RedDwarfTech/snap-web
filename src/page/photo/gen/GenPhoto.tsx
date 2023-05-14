@@ -360,8 +360,8 @@ const GenPhoto: React.FC = () => {
                 <div className="snap-oper-btn">
                     <div className="snap-params">
                         <Row style={{ marginBottom: '20px' }} justify="space-around" align="middle">
-                            <Col style={{ textAlign: 'right' }} span={6}>证件照尺寸：</Col>
-                            <Col span={18}>
+                            <Col style={{ textAlign: 'right' }} span={8}><span>证件照尺寸：</span></Col>
+                            <Col span={16}>
                                 <Select
                                     onChange={handleSelectChange}
                                     placeholder="请选择照片尺寸"
@@ -370,8 +370,8 @@ const GenPhoto: React.FC = () => {
                             </Col>
                         </Row>
                         <Row style={{ marginBottom: '25px' }} justify="space-around" align="middle">
-                            <Col style={{ textAlign: 'right' }} span={6}>背景色：</Col>
-                            <Col span={18}>
+                            <Col style={{ textAlign: 'right' }} span={8}><span>背景色：</span></Col>
+                            <Col span={16}>
                                 <div className="photo-bg-choice">
                                     {renderBgElement()}
                                 </div>

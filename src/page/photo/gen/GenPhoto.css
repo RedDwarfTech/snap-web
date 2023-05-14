@@ -131,7 +131,11 @@ input[type="file"]::before {
 }
 
 .snap-oper-btn {
-    width: 360px;
+    width: 480px;
+}
+
+.snap-params span{
+    font-size: 16px;
 }
 
 .photo-bg {
