@@ -3,7 +3,7 @@ import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useRef, useState } from "react";
 import { clearPhoto, doUpload, downloadZipFile, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
 import store from "@/redux/store/store";
-import { Alert, Checkbox, Col, Divider, Modal, Row, Select, Space, Spin, message } from "antd";
+import { Alert, Checkbox, Col, Modal, Row, Select, Space, Spin, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
