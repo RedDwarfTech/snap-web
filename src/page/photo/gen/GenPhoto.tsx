@@ -1,9 +1,9 @@
 import "./GenPhoto.css";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useRef, useState } from "react";
-import { clearPhoto, doUpload, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
+import { clearPhoto, doUpload, downloadZipFile, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
 import store from "@/redux/store/store";
-import { Alert, Modal, Select, Space, Spin, message } from "antd";
+import { Alert, Checkbox, Col, Divider, Modal, Row, Select, Space, Spin, message } from "antd";
 import { v4 as uuid } from 'uuid';
 import { useSelector } from "react-redux";
 import withConnect from "@/component/hoc/withConnect";
@@ -26,8 +26,10 @@ const GenPhoto: React.FC = () => {
     const [originPhoto, setOriginPhoto] = useState<String>();
     const [generated, setGenerated] = useState<boolean>(false);
     const [photoSize, setPhotoSize] = useState<string>();
+    const [printPhotoSize, setPrintPhotoSize] = useState<string>();
     const inputRef = useRef<HTMLInputElement>(null);
     const [photoType, setPhotoType] = useState<String[]>([]);
+    const [printPhotoType, setPrintPhotoType] = useState<String[]>([]);
     const { file } = useSelector((state: any) => state.rdRootReducer.file)
     const [bgColor, setBgColor] = useState('#438edb');
     const [downloadFileId, setDownloadFileId] = useState<string>('');
@@ -36,6 +38,7 @@ const GenPhoto: React.FC = () => {
     const [createdOrderInfo, setCreatedOrderInfo] = useState<{ formText: string, orderId: string }>();
     const { createdOrder } = useSelector((state: any) => state.rdRootReducer.pay);
     const [loading, setLoading] = useState(false);
+    const [downloadType, setDownloadType] = useState(0);
 
     React.useEffect(() => {
         if (file && Object.keys(file).length > 0) {
@@ -47,30 +50,36 @@ const GenPhoto: React.FC = () => {
     }, [file]);
 
     React.useEffect(() => {
-        if (createdOrder && Object.keys(createdOrder).length > 0) {
+        if (createdOrder && Object.keys(createdOrder).length > 0 && createdOrder.formText) {
             setCreatedOrderInfo(createdOrder);
             setFormText(createdOrder.formText);
         }
     }, [createdOrder]);
 
     React.useEffect(() => {
-        readPhotoType();
+        readPhotoType("./phototype.txt").then((photoType) => {
+            setPhotoType(photoType);
+        });
+        readPhotoType("./printphototype.txt").then((printPhotoType) => {
+            setPrintPhotoType(printPhotoType);
+        });
     }, []);
 
-    const readPhotoType = () => {
-        fetch('./phototype.txt')
-            .then(response => response.text())
-            .then(contents => {
-                let dataArray: string[] = contents.split("\n");
-                setPhotoType(dataArray);
-            })
-            .catch(error => console.error(error));
+    const readPhotoType = async (photoTypeName: string): Promise<string[]> => {
+        try {
+            const response = await fetch(photoTypeName);
+            const contents = await response.text();
+            const dataArray: string[] = contents.split("\n");
+            return dataArray;
+        } catch (error) {
+            console.error(error); return [];
+        }
     }
 
-    const renderPhotoTypeImpl = () => {
+    const renderPhotoTypeImpl = (photoTypeInput: String[]) => {
         const photoList: JSX.Element[] = [];
-        if (photoType && photoType.length > 0) {
-            photoType.forEach(item => {
+        if (photoTypeInput && photoTypeInput.length > 0) {
+            photoTypeInput.forEach(item => {
                 const pType = item.trim();
                 if (pType && pType.length > 0) {
                     const photoTypeContent = pType.split(',');
@@ -116,11 +125,35 @@ const GenPhoto: React.FC = () => {
 
     const downloadImpl = () => {
         if (downloadFileId && bgColor) {
-            getDownloadFileUrl(downloadFileId, bgColor).then((data) => {
-                if (data && data.result) {
-                    saveBase64AsFile(data.result.idPhoto, "证件照-" + Date.now().toString());
+            if (downloadType === 0) {
+                getDownloadFileUrl(downloadFileId, bgColor).then((data) => {
+                    if (data && data.result) {
+                        saveBase64AsFile(data.result.idPhoto, "证件照-" + Date.now().toString());
+                    }
+                });
+            }
+            if (downloadType === 1) {
+                if(!printPhotoSize) {
+                    message.warning("");
+                    return;
                 }
-            });
+                const printWidth = (parseFloat(printPhotoSize.split(",")[1].trim()) * 300) / 2.54 ;
+                const printHeight =  (parseFloat(printPhotoSize.split(",")[2].trim()) * 300) / 2.54;
+                const params = new URLSearchParams({
+                    bgColor: bgColor,
+                    fileId: downloadFileId,
+                    printWidth: printWidth.toString(),
+                    printHeight: printHeight.toString()
+                });
+                downloadZipFile(params).then((response: any) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', '证件照+排版照.zip');
+                    document.body.appendChild(link);
+                    link.click();
+                });
+            }
         }
     }
 
@@ -203,6 +236,10 @@ const GenPhoto: React.FC = () => {
         setPhotoSize(e);
     }
 
+    const handlePrintPhotoSelectChange = (e: any) => {
+        setPrintPhotoSize(e);
+    }
+
     const bgColorClick = (color: string) => {
         setBgColor(color);
     }
@@ -277,6 +314,37 @@ const GenPhoto: React.FC = () => {
         return bgColorList;
     }
 
+    const renderDownloadType = () => {
+        if (generated) {
+            return (
+                <Row style={{ marginBottom: '0px' }} justify="space-around" align="middle">
+                    <Col style={{ textAlign: 'right' }} span={6}>下载类型：</Col>
+                    <Col span={18}>
+                        <Checkbox onClick={() => setDownloadType(0)} checked={downloadType === 0 ? true : false} >证件照</Checkbox>
+                        <Checkbox onClick={() => setDownloadType(1)} checked={downloadType === 1 ? true : false}>证件照 + 排版照</Checkbox>
+                    </Col>
+                </Row>
+            );
+        }
+    }
+
+    const renderPrintPhotoCbx = () => {
+        if (downloadType === 1) {
+            return (
+                <Row style={{ marginBottom: '0px' }} justify="space-around" align="middle">
+                    <Col style={{ textAlign: 'right' }} span={6}>相纸尺寸：</Col>
+                    <Col span={18}>
+                        <Select
+                            onChange={handlePrintPhotoSelectChange}
+                            placeholder="请选择相纸尺寸"
+                            style={{ width: '85%' }}>{renderPhotoTypeImpl(printPhotoType)}
+                        </Select>
+                    </Col>
+                </Row>
+            );
+        }
+    }
+
     return (
         <div className="snap-container">
             <div className="snap-oper">
@@ -291,20 +359,26 @@ const GenPhoto: React.FC = () => {
                 </div>
                 <div className="snap-oper-btn">
                     <div className="snap-params">
-                        <div className="photo-size">
-                            <span>尺寸：</span>
-                            <Select
-                                onChange={handleSelectChange}
-                                placeholder="请选择照片尺寸"
-                                style={{ width: '85%' }}>{renderPhotoTypeImpl()}
-                            </Select>
-                        </div>
-                        <div className="photo-bg">
-                            <span>背景色：</span>
-                            <div className="photo-bg-choice">
-                                {renderBgElement()}
-                            </div>
-                        </div>
+                        <Row style={{ marginBottom: '20px' }} justify="space-around" align="middle">
+                            <Col style={{ textAlign: 'right' }} span={6}>证件照尺寸：</Col>
+                            <Col span={18}>
+                                <Select
+                                    onChange={handleSelectChange}
+                                    placeholder="请选择照片尺寸"
+                                    style={{ width: '85%' }}>{renderPhotoTypeImpl(photoType)}
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginBottom: '25px' }} justify="space-around" align="middle">
+                            <Col style={{ textAlign: 'right' }} span={6}>背景色：</Col>
+                            <Col span={18}>
+                                <div className="photo-bg-choice">
+                                    {renderBgElement()}
+                                </div>
+                            </Col>
+                        </Row>
+                        {renderDownloadType()}
+                        {renderPrintPhotoCbx()}
                     </div>
                     <div className="snap-action-impl">
                         <button onClick={reuploadFile}>重新上传</button>

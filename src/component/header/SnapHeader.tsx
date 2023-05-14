@@ -1,12 +1,14 @@
 import { Avatar, Button } from "antd";
 import React, { useState } from "react";
 import "./SnapHeader.css"
-import { doLoginOut, getCurrentUser, userLoginImpl } from "@/service/user/UserService";
+import { doLoginOut, userLoginImpl } from "@/service/user/UserService";
 import { AuthHandler, IUserModel } from "rdjs-wheel";
 import { readConfig } from "@/config/app/config-reader";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import withConnect from "../hoc/withConnect";
+import { UserService } from "rd-component";
+import store from "@/redux/store/store";
 
 export type HeaderFormProps = {
   onMenuClick: (menu: String) => void;
@@ -75,7 +77,7 @@ const SnapHeader: React.FC<HeaderFormProps> = (props) => {
   const loadCurrentUser = () => {
     if (!localStorage.getItem("userInfo") && isGetUserLoading === false) {
       setIsGetUserLoading(true);
-      getCurrentUser().then((data: any) => {
+      UserService.getCurrentUser(store).then((data: any) => {
         setUserInfo(data.result);
         localStorage.setItem("userInfo", JSON.stringify(data.result));
         setIsGetUserLoading(false);

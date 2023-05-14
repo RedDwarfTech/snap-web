@@ -130,9 +130,8 @@ input[type="file"]::before {
     content: "选择文件";
 }
 
-.photo-size {
-    width: 350px;
-    margin-top: 20px;
+.snap-oper-btn {
+    width: 360px;
 }
 
 .photo-bg {
