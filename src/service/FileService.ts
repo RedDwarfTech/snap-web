@@ -45,7 +45,10 @@ export function getDownloadFileUrl(fid: string,bgColor: string) {
 export function downloadZipFile(params: URLSearchParams){
     const config:AxiosRequestConfig = {
         method: 'get',
-        responseType: "stream",
+        responseType: "blob",
+        headers: {
+            'Content-Type': 'application/octet-stream'
+        },
         url: '/snap/photo/download/batch?' + params,
     };
     const actionTypeString: string = FileActionType[FileActionType.DOWNLOAD_FILE];
