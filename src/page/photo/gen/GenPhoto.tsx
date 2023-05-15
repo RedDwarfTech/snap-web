@@ -64,7 +64,18 @@ const GenPhoto: React.FC = () => {
         readPhotoType("./printphototype.txt").then((printPhotoType) => {
             setPrintPhotoType(printPhotoType);
         });
+        document.addEventListener('click', handleOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
     }, []);
+
+    const handleOutsideClick = (e: any) => {
+        const modal = document.getElementById('pay-popup');
+        if (modal && !modal.contains(e.target)) {
+            setFormText('');
+        }
+    };
 
     const readPhotoType = async (photoTypeName: string): Promise<string[]> => {
         try {
@@ -99,7 +110,7 @@ const GenPhoto: React.FC = () => {
 
     const handlePrePay = () => {
         let payReq = {
-            productId: 21
+            productId: downloadType === 0 ? 21 : 22
         };
         doPay(payReq, store);
     }
@@ -134,12 +145,12 @@ const GenPhoto: React.FC = () => {
                 });
             }
             if (downloadType === 1) {
-                if(!printPhotoSize) {
-                    message.warning("");
+                if (!printPhotoSize) {
+                    message.warning("请选择相纸尺寸");
                     return;
                 }
-                const printWidth = (parseFloat(printPhotoSize.split(",")[1].trim()) * 300) / 2.54 ;
-                const printHeight =  (parseFloat(printPhotoSize.split(",")[2].trim()) * 300) / 2.54;
+                const printWidth = (parseFloat(printPhotoSize.split(",")[1].trim()) * 300) / 2.54;
+                const printHeight = (parseFloat(printPhotoSize.split(",")[2].trim()) * 300) / 2.54;
                 const params = new URLSearchParams({
                     bgColor: bgColor,
                     fileId: downloadFileId,
@@ -318,7 +329,7 @@ const GenPhoto: React.FC = () => {
     const renderDownloadType = () => {
         if (generated) {
             return (
-                <Row style={{ marginBottom: '0px' }} justify="space-around" align="middle">
+                <Row style={{ marginBottom: '20px' }} justify="space-around" align="middle">
                     <Col style={{ textAlign: 'right' }} span={8}><span>下载类型：</span></Col>
                     <Col span={16}>
                         <Checkbox onClick={() => setDownloadType(0)} checked={downloadType === 0 ? true : false} >证件照</Checkbox>
