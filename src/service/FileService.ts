@@ -42,19 +42,6 @@ export function getDownloadFileUrl(fid: string,bgColor: string) {
     return requestWithActionType(config, actionTypeString, store);
 }
 
-export function downloadZipFile(params: URLSearchParams){
-    const config:AxiosRequestConfig = {
-        method: 'get',
-        responseType: "blob",
-        headers: {
-            'Content-Type': 'application/octet-stream'
-        },
-        url: '/snap/photo/download/batch?' + params,
-    };
-    const actionTypeString: string = FileActionType[FileActionType.DOWNLOAD_FILE];
-    return requestWithActionType(config, actionTypeString, store);
-}
-
 export function clearPhoto() {
     const actionTypeString: string = FileActionType[FileActionType.FILE_CLEAR];
     const action = {

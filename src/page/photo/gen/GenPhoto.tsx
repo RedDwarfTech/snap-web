@@ -1,7 +1,7 @@
 import "./GenPhoto.css";
 import prevPic from "@/resource/image/nohpic.jpg";
 import { MouseEventHandler, useRef, useState } from "react";
-import { clearPhoto, doUpload, downloadZipFile, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
+import { clearPhoto, doUpload, getDownloadFileUrl, saveBase64AsFile } from "@/service/FileService";
 import store from "@/redux/store/store";
 import { Alert, Checkbox, Col, Modal, Row, Select, Space, Spin, message } from "antd";
 import { v4 as uuid } from 'uuid';
@@ -17,6 +17,7 @@ import 'rd-component/dist/style.css';
 import { ICropParams } from "@/models/request/photo/CropParams";
 import { bgColors } from "@/config/app/app-config";
 import ColorUtil from "@/utils/ColorUtil";
+import { FileService } from "rd-component";
 
 const { Option } = Select;
 
@@ -145,7 +146,7 @@ const GenPhoto: React.FC = () => {
                     printWidth: parseInt(printWidth.toString()).toString(),
                     printHeight: parseInt(printHeight.toString()).toString()
                 });
-                downloadZipFile(params).then((response: any) => {
+                FileService.downloadZipFile(params).then((response: any) => {
                     const url = window.URL.createObjectURL(new Blob([response.data]));
                     const link = document.createElement('a');
                     link.href = url;
