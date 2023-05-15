@@ -45,6 +45,7 @@ export function getDownloadFileUrl(fid: string,bgColor: string) {
 export function downloadZipFile(params: URLSearchParams){
     const config = {
         method: 'get',
+        responseType: "arraybuffer",
         url: '/snap/photo/download/batch?' + params,
     };
     const actionTypeString: string = FileActionType[FileActionType.DOWNLOAD_FILE];
