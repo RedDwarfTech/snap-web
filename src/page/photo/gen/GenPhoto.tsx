@@ -157,7 +157,9 @@ const GenPhoto: React.FC = () => {
                     printWidth: parseInt(printWidth.toString()).toString(),
                     printHeight: parseInt(printHeight.toString()).toString()
                 });
+                setLoading(true);
                 FileService.downloadZipFile(params).then((response: any) => {
+                    setLoading(false);
                     const url = window.URL.createObjectURL(new Blob([response.data]));
                     const link = document.createElement('a');
                     link.href = url;
@@ -397,10 +399,10 @@ const GenPhoto: React.FC = () => {
                         {renderUploadImage()}
                     </div>
                     <Modal open={loading} footer={null} closable={false}>
-                        <Spin tip="生成中..." size="large">
+                        <Spin tip="处理中..." size="large">
                             <Alert
-                                message="生成证件照需要3-10s左右，请稍等..."
-                                description="生成证件照过程中遇到问题？可联系客服QQ：479175365"
+                                message="处理证件照需要3-10s左右，请稍等..."
+                                description="使用过程中遇到问题？可联系客服QQ：479175365"
                                 type="info"
                             />
                         </Spin>
