@@ -43,7 +43,7 @@ export function getDownloadFileUrl(fid: string,bgColor: string) {
 }
 
 export function downloadZipFile(params: URLSearchParams){
-    const config = {
+    const config:AxiosRequestConfig = {
         method: 'get',
         responseType: "arraybuffer",
         url: '/snap/photo/download/batch?' + params,
